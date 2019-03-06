@@ -11,7 +11,8 @@ module fastICA
 
     function whiten_data(mat::Array{Float64 ,2})::Array{Float64 ,2}
         eig = eigen_decomposition(mat)
-        return (Diagonal(eig.values .^ (-1/2)) * eig.vectors') * mat
+        values = broadcast(+,  eps(0.3), eig.values)
+        return (Diagonal(values .^ (-1/2)) * eig.vectors') * mat
     end
 
 end
