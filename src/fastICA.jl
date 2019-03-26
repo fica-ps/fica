@@ -34,7 +34,26 @@ module fastICA
     #X       -> the data matrix, must be whitened(use the whiten function)
     #tol     -> tolerable change of the weights at convergence
     function fast_ica(maxiter::Int32, nic::Int8,X::Array{Float64,2},tol::Float64)::ICA
-        w = rand(nic); # initialize weights with random values
+        #validate arguments
+        m, n = size(X)
+        n > 1 || error("There must be more than one samples, i.e. n > 1.")
+        maxiter > 1 || error("maxiter must be greater than 1.")
+        tol > 0 || error("tol must be positive.")
+        
+        for j 1:nic
+            w = rand(m) # initialize weights of size n with random values
+            #normalize weight vector to unity i.e. vector sum = 1
+            normalize!(w,1)
+            converged = false
+            while !converged && t < maxiter
+            
+            
+            end
+        
+        end
+        
+        
+        
         
     end
 end
