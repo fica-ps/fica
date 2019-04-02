@@ -1,6 +1,8 @@
 use crate::ffi::*;
+use crate::ffi::whitening::SVDHandler;
 use whitening::Matrix;
 use arrayfire::*;
+
 
 
 pub fn matrix_from_slices(values: &[f32], rows: u64, cols: u64) -> MatrixHandler {
@@ -9,7 +11,7 @@ pub fn matrix_from_slices(values: &[f32], rows: u64, cols: u64) -> MatrixHandler
     arr.get()
 }
 
-pub fn to_svd(u:Matrix, s:Matrix, v:Matrix) -> SVDHandler {
+pub fn to_svd_handler(u:Matrix, s:Matrix, v:Matrix) -> SVDHandler {
         let (u,s,v) = (u.get(), s.get(), v.get());
         SVDHandler { u, s, v }
 }
