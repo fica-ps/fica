@@ -1,4 +1,11 @@
-*.jl.cov
-*.jl.*.cov
-*.jl.mem
-deps/deps.jl
+# ignore cargo and rust binaries
+/target
+**/*.rs.bk
+Cargo.lock
+
+# ignore vscode 
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

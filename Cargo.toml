@@ -1,0 +1,8 @@
+[package]
+name = "fica"
+version = "0.1.0"
+authors = ["Tzeroxik <adriano.halo@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+arrayfire = "3.6.0"
