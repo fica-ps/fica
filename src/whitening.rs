@@ -1,20 +1,20 @@
 use arrayfire::*;
 
-pub type Matrix = Array<f32>;
-pub type SVD = (Matrix, Matrix, Matrix);
+use crate::data::*;
 
 // normalization constant = exp(1.0, -5).
 static EPSILON: f32 = 0.00001_f32;
 
 // *** data centering and SVD ***
 pub fn normalized_svd(mat: &Matrix) -> SVD {
-    svd({
+    let norm_mat = {
         let centered_mat     = sub(mat, &mean(mat, 0 as i64), true);
         let cm_transpose_mul = matmul(&centered_mat, &centered_mat, MatProp::NONE, MatProp::TRANS);
         let inv_col_size     = 1.0 / centered_mat.dims().get()[1] as f32;
         
         &mul(&cm_transpose_mul, &inv_col_size, true)
-    })
+    };
+    svd(norm_mat)
 }
 
 // *** data rotation ***
@@ -24,12 +24,12 @@ pub fn rotated_data_matrix(mat: &Matrix, sigma_svd_u: &Matrix) -> Matrix {
 
 // *** dimensional reduction ***
 pub fn reduced_dimension_repr(mat: &Matrix, sigma_svd_u: &Matrix, ncols: u64) -> Matrix {
-    let new_dim = {
+    let rows = {   
         let dims = mat.dims();
         let dims = dims.get();
-        Dim4::new(&[dims[0], ncols, 1, 1])
+        dims[0] 
     };
-    matmul( &tile( &sigma_svd_u, new_dim ), mat, MatProp::TRANS, MatProp::NONE )  
+    matmul( &tile( &sigma_svd_u, dim(rows, ncols) ), mat, MatProp::TRANS, MatProp::NONE )  
 }
 
 /* *** PCA whitening ***
@@ -52,8 +52,6 @@ pub fn pca_whitening(mat: &Matrix, sigma_svd_u: &Matrix, sigma_svd_s: &Matrix) -
  * where x = mat, U = sigma_svd_u
  */
 pub fn zca_whitening(mat: &Matrix, sigma_svd_u: &Matrix, sigma_svd_s: &Matrix) -> Matrix {
-    matmul(sigma_svd_u, 
-           &pca_whitening(mat, sigma_svd_u, sigma_svd_s), 
-           MatProp::NONE, 
-           MatProp::NONE)
+    let pca_whitened = pca_whitening(mat, sigma_svd_u, sigma_svd_s); 
+    matmul(sigma_svd_u, &pca_whitened, MatProp::NONE, MatProp::NONE)
 }

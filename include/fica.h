@@ -5,16 +5,31 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef int64_t MatrixHandler;
+typedef int64_t MatrixHandle;
 
 typedef struct {
-  MatrixHandler u;
-  MatrixHandler s;
-  MatrixHandler v;
-} SVDHandler;
+    MatrixHandle u;
+    MatrixHandle s;
+    MatrixHandle v;
+} SVDHandle;
 
-MatrixHandler create_matrix(const float *values, uint64_t rows, uint64_t cols);
+MatrixHandle create_matrix(const float *values, uint64_t rows, uint64_t cols);
 
-SVDHandler normalized_svd(MatrixHandler matrix);
+SVDHandle ffi_normalized_svd(MatrixHandle matrix);
 
-void print_matrix(MatrixHandler matrix);
+MatrixHandle ffi_pca_whitening(MatrixHandle hmatrix,
+                               MatrixHandle h_svd_u,
+                               MatrixHandle h_svd_s);
+
+void ffi_print_matrix(MatrixHandle hmatrix);
+
+MatrixHandle ffi_reduced_dimension_repr(MatrixHandle hmatrix,
+                                        MatrixHandle h_svd_u,
+                                        uint64_t ncols);
+
+MatrixHandle ffi_rotated_data_matrix(MatrixHandle hmatrix,
+                                     MatrixHandle h_svd_u);
+
+MatrixHandle ffi_zca_whitening(MatrixHandle hmatrix,
+                               MatrixHandle h_svd_u,
+                               MatrixHandle h_svd_s);
