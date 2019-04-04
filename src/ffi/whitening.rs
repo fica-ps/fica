@@ -5,24 +5,27 @@ use crate::whitening::*;
 
 #[no_mangle]
 pub extern "C" fn create_matrix(values: *const f32, rows: u64, cols: u64) -> MatrixHandle {
-    let values = unsafe {
-        std::slice::from_raw_parts(values, (rows * cols) as usize)
-    };
-    matrix_from_slices(values, rows, cols)
+    use crate::data::new_matrix;
+    
+    new_matrix(
+        unsafe { std::slice::from_raw_parts(values, (rows * cols) as usize) }, 
+        rows, 
+        cols
+    ).get()
 }
 
 #[no_mangle]
 pub extern "C" fn ffi_print_matrix(hmatrix: MatrixHandle) {
     use arrayfire::print;
-    use arrayfire::Array;
+    use crate::data::Matrix;
 
-    let m: Array<f32> = hmatrix.into(); 
+    let m: Matrix = hmatrix.into(); 
     print(&m);
 }
 
 #[no_mangle]
-pub extern "C" fn ffi_normalized_svd(matrix: MatrixHandle) -> SVDHandle {
-    let (u,s,v) = whitening::normalized_svd(&(matrix.into()));
+pub extern "C" fn ffi_normalized_svd(hmatrix: MatrixHandle) -> SVDHandle {
+    let (u,s,v) = normalized_svd(&hmatrix.into());
     SVDHandle { u: u.get(), s: s.get(), v: v.get() }
 }
 
@@ -44,15 +47,4 @@ pub extern "C" fn ffi_pca_whitening(hmatrix: MatrixHandle, h_svd_u: MatrixHandle
 #[no_mangle]
 pub extern "C" fn ffi_zca_whitening(hmatrix: MatrixHandle, h_svd_u: MatrixHandle, h_svd_s: MatrixHandle) -> MatrixHandle {
     zca_whitening(&hmatrix.into(), &h_svd_u.into(), &h_svd_s.into()).get()
-}
-
-// ***************************************************************************
-
-fn matrix_from_slices(values: &[f32], rows: u64, cols: u64) -> MatrixHandle {
-    use arrayfire::Dim4;
-    use arrayfire::Array;
-
-    let dim = Dim4::new(&[rows,cols,1,1]);
-    let arr = Array::new(&values, dim);
-    arr.get()
 }

@@ -6,3 +6,7 @@ edition = "2018"
 
 [dependencies]
 arrayfire = "3.6.0"
+
+[lib]
+name = "fica"
+crate-type = ["dylib"]

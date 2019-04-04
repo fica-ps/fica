@@ -15,7 +15,7 @@ typedef struct {
 
 MatrixHandle create_matrix(const float *values, uint64_t rows, uint64_t cols);
 
-SVDHandle ffi_normalized_svd(MatrixHandle matrix);
+SVDHandle ffi_normalized_svd(MatrixHandle hmatrix);
 
 MatrixHandle ffi_pca_whitening(MatrixHandle hmatrix,
                                MatrixHandle h_svd_u,

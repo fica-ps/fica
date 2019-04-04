@@ -9,4 +9,5 @@ pub struct SVDHandle {
     v:MatrixHandle
 }
 
-// generate ffi with "cbindgen -o .\include\fica.h -l C"
+// generate ffi header:
+// cbindgen -o .\include\fica.h -l C
