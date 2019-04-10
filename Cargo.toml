@@ -9,4 +9,4 @@ arrayfire = "3.6.0"
 
 [lib]
 name = "fica"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
