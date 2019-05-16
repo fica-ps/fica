@@ -1,6 +1,6 @@
 # FICA
 
-This is the experimental branch:
+This is the main implementation for FICA:
 
 At the moment there's an ongoing implementation using:
 

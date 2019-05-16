@@ -23,6 +23,11 @@ pub mod data {
     pub fn new_matrix(values: &[f32], row_size:u64, col_size: u64) -> Matrix {
         Matrix::new(values, dim(row_size, col_size))
     }
+
+    #[inline(always)]
+    pub fn empty_row_vector(length: u64) -> Matrix {
+        Matrix::new_empty(dim(length, 1))
+    }
 }
 
 #[cfg(test)]
@@ -30,10 +35,24 @@ mod test {
 
     #[test]
     fn name() {
-        use crate::data::*;
         
-        let _ = empty_matrix(2, 2);
+        // let m = new_matrix(&[1.0,2.0,3.0,4.0], 2, 2);
+        
+        // print(&m);
 
+        // let nm = norm(&m, NormType::VECTOR_P, 2.0, 0.0);
+        
+        // print(&m);
+        // println!("{}", nm);
+        use arrayfire::*;
+        use super::data::*;
+
+        /*
+            |1 2|
+            |3 4|
+         */
+
+        // let v = new_matrix(&[1.0,3.0,2.0,4.0], 5, 1);
     }
     
 }
