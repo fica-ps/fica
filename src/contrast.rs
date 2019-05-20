@@ -6,6 +6,8 @@ use arrayfire::*;
 pub type ContrastFunc =  Box<Fn(&Matrix) -> (Matrix, Matrix)>;
 
 pub fn gen_contrast_function(fid: ContrastFunctionId, alpha: f32) -> ContrastFunc {
+    
+    // TODO implement kurtosis and exp
     match fid {
         ContrastFunctionId::LOGCOSH => Box::new(move |m| logcosh(m, alpha)),
         _ => unimplemented!()

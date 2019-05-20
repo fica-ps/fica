@@ -10,3 +10,6 @@ arrayfire = "3.6.0"
 [lib]
 name = "fica"
 crate-type = ["cdylib"]
+
+[build-dependencies]
+bindgen = "0.49.0"

@@ -4,10 +4,12 @@ pub mod fastica;
 pub mod contrast;
 
 pub mod data {
+    
     use arrayfire::Array;
     use arrayfire::Dim4;
 
     pub type Matrix = Array<f32>;
+
     pub type SVD = (Matrix, Matrix, Matrix);
     
     #[inline(always)]
@@ -29,19 +31,4 @@ pub mod data {
     pub fn empty_row_vector(length: u64) -> Matrix {
         Matrix::new_empty(dim(length, 1))
     }
-}
-
-#[cfg(test)]
-mod test {
-
-    #[test]
-    fn name() {
-        use arrayfire::{Dim4, print, randu, max};
-        let dims = Dim4::new(&[1, 1, 1, 1]);
-        let a = randu::<f32>(dims);
-        print(&a);
-        let b = max(&a, 0);
-        print(&b);
-    }
-    
 }

@@ -6,7 +6,8 @@ language            = "C"
 style               = "Type"
 
 [parse]
-parse_deps          = false
+parse_deps = true
+include = ["arrayfire"]
 
 [enum]
 rename_variants     = "CamelCase"

@@ -14,6 +14,7 @@ pub extern "C" fn create_matrix(values: *const f32, rows: u64, cols: u64) -> Mat
     ).get()
 }
 
+
 #[no_mangle]
 pub extern "C" fn print_matrix(hmatrix: MatrixHandle) {
     use arrayfire::print;
@@ -48,3 +49,4 @@ pub extern "C" fn pca_whitening(hmatrix: MatrixHandle, h_svd_u: MatrixHandle, h_
 pub extern "C" fn zca_whitening(hmatrix: MatrixHandle, h_svd_u: MatrixHandle, h_svd_s: MatrixHandle) -> MatrixHandle {
     whitening::zca_whitening(&hmatrix.into(), &h_svd_u.into(), &h_svd_s.into()).get()
 }
+
