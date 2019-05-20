@@ -1,6 +1,7 @@
 pub mod whitening;
 pub mod ffi;
 pub mod fastica;
+pub mod contrast;
 
 pub mod data {
     use arrayfire::Array;
@@ -35,24 +36,12 @@ mod test {
 
     #[test]
     fn name() {
-        
-        // let m = new_matrix(&[1.0,2.0,3.0,4.0], 2, 2);
-        
-        // print(&m);
-
-        // let nm = norm(&m, NormType::VECTOR_P, 2.0, 0.0);
-        
-        // print(&m);
-        // println!("{}", nm);
-        use arrayfire::*;
-        use super::data::*;
-
-        /*
-            |1 2|
-            |3 4|
-         */
-
-        // let v = new_matrix(&[1.0,3.0,2.0,4.0], 5, 1);
+        use arrayfire::{Dim4, print, randu, max};
+        let dims = Dim4::new(&[1, 1, 1, 1]);
+        let a = randu::<f32>(dims);
+        print(&a);
+        let b = max(&a, 0);
+        print(&b);
     }
     
 }

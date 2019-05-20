@@ -1,4 +1,7 @@
 use super::data::*;
+use crate::ffi::ContrastFunctionId;
+use crate::contrast::*;
+
 use arrayfire::*;
 
 /**
@@ -24,57 +27,107 @@ use arrayfire::*;
  *      initial weight matrix
  *   
  */
-pub fn fast_ica(whitened_matrix: &Matrix, weights: &Matrix, 
-                max_iter: u64, n_components: u64, 
-                conv_threshold: f32, alpha: f32) -> Matrix {
+pub fn fast_ica(whitened_matrix: &Matrix, n_components: u64, 
+                max_iter: u64, conv_threshold: f32, 
+                alpha: f32, cfid: ContrastFunctionId) -> Matrix {
+
+    let cfunc = gen_contrast_function(cfid, alpha);
     
-    let ret_weights = empty_matrix(n_components, n_components);
+    let mut ret_weights = empty_matrix(n_components, n_components);
 
     for comp_i in 0..n_components {
         
         // weight column vector
         let mut weights_col: Matrix = randu::<f32>(dim(n_components, 1));
         
-        for _iter_i in 0..max_iter {
+        for _ in 0..max_iter {
             
+            // calculate a new weight column
             let n_weights_col = { 
-                let nw_temp = update_weights(&weights_col, &whitened_matrix, alpha);
+                let temp = update_weights(&weights_col, whitened_matrix, &cfunc);
                 if comp_i >= 1 { 
-                    gram_schmit_decorrelation(&nw_temp, &whitened_matrix)
+                    
+                    // Avoid convergeing in a local minima after the first iteration  
+                    let slice_col = col(&weights_col, comp_i);
+                    gram_schmit_decorrelation(&temp, &slice_col)
                 } else {
-                    nw_temp
+                    temp
                 }
             };
-             
+ 
             let conv_distance = distance(&weights_col, &n_weights_col);
             
             weights_col = n_weights_col;
-
+            
             if conv_distance < conv_threshold { 
-                break; 
-            }
+                
+                // set ret_weights component column to new weights
+                ret_weights = set_col(&ret_weights, &weights_col, comp_i); 
+                break;
+            } 
         }
-
-        // set (ret_weights) column to weights_col
     }
 
-    unimplemented!()
+    // return estimated components
+    dot(&ret_weights, whitened_matrix, MatProp::NONE, MatProp::NONE)
 }
 
 fn distance(w: &Matrix, nw: &Matrix) -> f32 {
     /*
-        chg = maximum(abs.(abs.(sum(w1 .* wp)) .- 1.0))
+        dist = w1 .* wp;
+        dist = sum(dist)
+        dist = abs. (dist) .- 1.0
+        dist = abs. (dist)
+        return maximum(dist)
      */
-    unimplemented!()
+    
+
+    let dist = {
+        
+        let w_prod = mul(w, nw, true);
+        
+        let vec_size = w.dims()[0] as usize;
+        
+        let mut buffer = empty_row_vector(w.dims()[0]);
+    
+        for i in 0..vec_size {
+            buffer = { 
+                let col_sum = sum(&w_prod, i as i32);
+                set_col(&buffer, &col_sum ,i as u64) 
+            };
+        }
+
+        let temp = abs(&buffer); 
+        let temp = sub(&temp, &1.0, true);
+        abs(&temp)
+    };
+    
+    
+    let (max_val, _, _) = imax_all(&dist);
+    max_val as f32 
 }
 
-fn gram_schmit_decorrelation(nw: &Matrix, whitened_mat:&Matrix) -> Matrix  {
+fn gram_schmit_decorrelation(nw: &Matrix, wcol: &Matrix) -> Matrix  {
     /*
-        w_new -= np.dot(np.dot(w_new, W[:i].T), W[:i])
+        x = dotProduct(w_new, W[col_i]')
+        x = dotProduct(x, W[col_i])
+        w_new - x
     */
-    unimplemented!()
+    
+    let rw = dot(nw,  wcol, MatProp::NONE, MatProp::TRANS);
+    let rw = dot(&rw, wcol, MatProp::NONE, MatProp::NONE);
+    sub(nw, &rw, false)
 }
 
-fn update_weights(nw: &Matrix, whitened_mat:&Matrix, alpha: f32) -> Matrix {
-    unimplemented!()
-} 
+fn update_weights(weights: &Matrix, whitened_mat: &Matrix, cf: &ContrastFunc) -> Matrix {
+    
+    let (g, dg) = cf(&dot(weights, whitened_mat, MatProp::TRANS, MatProp::NONE));
+    
+    let new_weights = {
+        let temp = matmul(whitened_mat, &g, MatProp::NONE, MatProp::NONE);
+        temp
+        // TODO finish weight updating
+        
+    }; 
+    new_weights 
+}

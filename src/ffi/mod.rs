@@ -9,5 +9,12 @@ pub struct SVDHandle {
     v:MatrixHandle
 }
 
+#[repr(C)]
+pub enum ContrastFunctionId {
+    LOGCOSH  = 0,
+    KURTOSIS = 1,
+    EXP      = 2,
+}
+
 // generate ffi header:
 // cbindgen -o .\include\fica.h -l C
