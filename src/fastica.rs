@@ -1,5 +1,5 @@
+use super::contrast::*;
 use super::data::*;
-use crate::contrast::*;
 
 use arrayfire::*;
 
@@ -48,7 +48,7 @@ pub fn fast_ica(
                 let temp = update_weights(&weights_col, whitened_matrix, &cfunc, alpha);
 
                 if comp_i >= 1 {
-                    // Avoid convergeing in a local minima after the first iteration
+                    // Avoid converging in a local minima after the first iteration
                     let slice_col = col(&weights_col, comp_i);
 
                     gram_schmit_decorrelation(&temp, &slice_col)
@@ -97,7 +97,7 @@ fn distance(w: &Matrix, nw: &Matrix) -> f32 {
         }
 
         let temp = abs(&buffer);
-        let temp = sub(&temp, &1.0, true);
+        let temp = sub(&temp, &(1.0 as f32), true);
         abs(&temp)
     };
 
@@ -112,8 +112,8 @@ fn gram_schmit_decorrelation(nw: &Matrix, wcol: &Matrix) -> Matrix {
         w_new - x
     */
 
-    let rw = dot(nw, wcol, MatProp::NONE, MatProp::TRANS);
-    let rw = dot(&rw, wcol, MatProp::NONE, MatProp::NONE);
+    let mut rw = dot(nw, wcol, MatProp::NONE, MatProp::TRANS);
+    rw = dot(&rw, wcol, MatProp::NONE, MatProp::NONE);
     sub(nw, &rw, false)
 }
 

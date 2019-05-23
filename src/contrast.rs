@@ -1,4 +1,4 @@
-use crate::data::Matrix;
+use super::data::Matrix;
 
 use arrayfire::*;
 
@@ -48,7 +48,7 @@ fn exponential(mat: &Matrix, alpha: f32) -> (Matrix, Matrix) {
 
     let g = mul(mat, &e, false);
 
-    // (1 - np.power(u, 2)) * exp
+    // (1 - power(u, 2)) * exp
     let dg = {
         let mut temp = pow(mat, &alpha, true);
         temp = mul(&temp, &e, false);
