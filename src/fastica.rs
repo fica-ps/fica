@@ -1,6 +1,5 @@
 use super::data::*;
 use crate::contrast::*;
-use crate::ffi::ContrastFunctionId;
 
 use arrayfire::*;
 
