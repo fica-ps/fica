@@ -128,7 +128,7 @@ fn update_weights(
         cf(&temp, alpha)
     };
     let new_weights = {
-        let temp = matmul(whitened_mat, &g, MatProp::NONE, MatProp::NONE);
+        let temp = mul(whitened_mat, &g, false);
         temp
         // TODO finish weight updating
     };
