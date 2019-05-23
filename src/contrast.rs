@@ -46,12 +46,12 @@ fn exponential(mat: &Matrix, alpha: f32) -> (Matrix, Matrix) {
         mul(&coef, &temp, true)
     };
 
-    let g = matmul(mat, &e, MatProp::NONE, MatProp::NONE);
+    let g = mul(mat, &e, false);
 
     // (1 - np.power(u, 2)) * exp
     let dg = {
         let mut temp = pow(mat, &alpha, true);
-        temp = matmul(&temp, &e, MatProp::NONE, MatProp::NONE);
+        temp = mul(&temp, &e, false);
         sub(&1, &temp, true)
     };
 
