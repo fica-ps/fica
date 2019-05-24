@@ -13,6 +13,7 @@ pub struct SVDHandle {
     v: MatrixHandle,
 }
 
+#[no_mangle]
 pub extern "C" fn fast_ica(
     whitened_matrix: MatrixHandle,
     n_components: u64,
@@ -22,16 +23,18 @@ pub extern "C" fn fast_ica(
     cfid: u32,
 ) -> MatrixHandle {
 
-    use crate::fastica;
     use crate::contrast::ContrastFunctionId;
-    
-    let fid_enum: ContrastFunctionId = unsafe {std::mem::transmute(cfid as u8)};
+    use crate::fastica;
+
+    let fid_enum: ContrastFunctionId = unsafe { std::mem::transmute(cfid as u8) };
 
     fastica::fast_ica(
-        &whitened_matrix.into(), 
-        n_components, max_iter, 
-        conv_threshold, alpha, 
-        fid_enum 
-    ).get()
-
+        &whitened_matrix.into(),
+        n_components,
+        max_iter,
+        conv_threshold,
+        alpha,
+        fid_enum,
+    )
+    .get()
 }

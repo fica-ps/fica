@@ -13,13 +13,20 @@ typedef struct {
     MatrixHandle v;
 } SVDHandle;
 
-MatrixHandle create_matrix(const float *values, uint64_t rows, uint64_t cols);
+MatrixHandle create_matrix(float *values, uint64_t rows, uint64_t cols);
+
+MatrixHandle fast_ica(MatrixHandle whitened_matrix,
+                      uint64_t n_components,
+                      uint64_t max_iter,
+                      float conv_threshold,
+                      float alpha,
+                      uint32_t cfid);
+
+void get_matrix(MatrixHandle hmatrix, float *to, uintptr_t size);
 
 SVDHandle normalized_svd(MatrixHandle hmatrix);
 
-MatrixHandle pca_whitening(MatrixHandle hmatrix,
-                           MatrixHandle h_svd_u,
-                           MatrixHandle h_svd_s);
+MatrixHandle pca_whitening(MatrixHandle hmatrix, SVDHandle svd_h);
 
 void print_matrix(MatrixHandle hmatrix);
 
@@ -29,6 +36,4 @@ MatrixHandle reduced_dimension_repr(MatrixHandle hmatrix,
 
 MatrixHandle rotated_data_matrix(MatrixHandle hmatrix, MatrixHandle h_svd_u);
 
-MatrixHandle zca_whitening(MatrixHandle hmatrix,
-                           MatrixHandle h_svd_u,
-                           MatrixHandle h_svd_s);
+MatrixHandle zca_whitening(MatrixHandle hmatrix, SVDHandle svd_h);
