@@ -1,21 +1,16 @@
-
 pub mod utils;
 pub mod whitening;
+pub mod matrix;
+
+use matrix::MatrixHandle;
+use utils::*;
+
 // generate ffi header:
 // cbindgen -o .\include\fica.h -l C
 
-pub type MatrixHandle = i64;
-
-#[repr(C)]
-pub struct SVDHandle {
-    u: MatrixHandle,
-    s: MatrixHandle,
-    v: MatrixHandle,
-}
-
 #[no_mangle]
 pub extern "C" fn fast_ica(
-    whitened_matrix: MatrixHandle,
+    whitened_matrix: &MatrixHandle,
     n_components: u64,
     max_iter: u64,
     conv_threshold: f32,
@@ -28,13 +23,17 @@ pub extern "C" fn fast_ica(
 
     let fid_enum: ContrastFunctionId = unsafe { std::mem::transmute(cfid as u8) };
 
-    fastica::fast_ica(
-        &whitened_matrix.into(),
-        n_components,
-        max_iter,
-        conv_threshold,
-        alpha,
-        fid_enum,
-    )
-    .get()
+    let wmat = from_handle(*whitened_matrix);
+
+    let result = 
+        fastica::fast_ica(
+            &*wmat,
+            n_components,
+            max_iter,
+            conv_threshold,
+            alpha,
+            fid_enum,
+        );
+
+    to_handle(result)
 }

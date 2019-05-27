@@ -1,33 +1,38 @@
-use super::MatrixHandle;
+use super::matrix::*;
+use crate::data::Matrix;
+use arrayfire::Backend;
+
+const BACKENDS:[Backend;3] = [Backend::OPENCL, Backend::CUDA, Backend::CPU];
 
 #[no_mangle]
-pub extern "C" fn create_matrix(values: *mut f32, rows: u64, cols: u64) -> MatrixHandle {
-    use crate::data::new_matrix;
-    use std::slice;
-
-    new_matrix(
-        unsafe { slice::from_raw_parts(values, (rows * cols) as usize) },
-        rows,
-        cols,
-    )
-    .get()
+pub extern "C" fn free_handle(hmatrix: MatrixHandle) {
+    from_handle(hmatrix);
 }
 
 #[no_mangle]
-pub extern "C" fn get_matrix(hmatrix: MatrixHandle, to: *mut f32, size: usize) {
-    use crate::data::Matrix;
-    use std::slice;
-
-    let m: Matrix = hmatrix.into();
-    let buffer: &mut [f32] = unsafe { slice::from_raw_parts_mut(to, size) };
-    m.host(buffer);
+pub extern "C" fn free_svd_handle(hsvd: SVDHandle) {
+    svd2mat(&hsvd);
 }
 
-#[no_mangle]
-pub extern "C" fn print_matrix(hmatrix: MatrixHandle) {
-
-    use crate::data::Matrix;
-    use arrayfire::print;
-    let m: Matrix = hmatrix.into();
-    print(&m);
+pub extern "C" fn set_backend(backendId: i32) {
+     arrayfire::set_backend(BACKENDS[backendId as usize]);
 }
+
+pub fn from_handle(hmatrix: MatrixHandle) -> Box<Matrix> {
+    unsafe { Box::from_raw(hmatrix as *mut Matrix) }
+}
+
+pub fn to_handle_boxed(matbox:Box<Matrix>) -> MatrixHandle {
+    Box::into_raw(matbox) as MatrixHandle
+}
+
+pub fn to_handle(mat: Matrix) -> MatrixHandle {
+    to_handle_boxed(Box::new(mat))
+}
+
+pub fn svd2mat(svd: &SVDHandle) -> (Box<Matrix>, Box<Matrix>, Box<Matrix>) {
+    (from_handle(svd.u),
+     from_handle(svd.s),
+     from_handle(svd.v))
+}
+
