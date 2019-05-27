@@ -1,4 +1,3 @@
-use crate::ffi::*;
 use crate::whitening;
 use super::utils::*;
 use super::matrix::*;
