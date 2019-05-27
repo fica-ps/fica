@@ -6,14 +6,14 @@ const BACKENDS:[Backend;3] = [Backend::OPENCL, Backend::CUDA, Backend::CPU];
 
 #[no_mangle]
 pub extern "C" fn free_handle(hmatrix: MatrixHandle) {
-    from_handle(hmatrix);
+    std::mem::drop(from_handle(hmatrix));
 }
 
 #[no_mangle]
 pub extern "C" fn free_svd_handle(hsvd: SVDHandle) {
-     free_handle(hsvd.u);
-     free_handle(hsvd.s);
-     free_handle(hsvd.v);
+     for e in &[hsvd.u, hsvd.s,hsvd.v] {
+          free_handle(*e);
+     }
 }
 
 pub extern "C" fn set_backend(backend_id: i32) {

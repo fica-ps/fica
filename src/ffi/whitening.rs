@@ -33,26 +33,41 @@ pub extern "C" fn reduced_dimension_repr(
     ncols: u64,
 ) -> MatrixHandle {
 
-    let m = *from_handle(*hmatrix);
-    let svd_u = *from_handle(*h_svd_u);
+    let m = from_handle(*hmatrix);
+    let svd_u = from_handle(*h_svd_u);
 
     let r = whitening::reduced_dimension_repr(&m, &svd_u, ncols);
+    
+    for h in &[m,svd_u] { 
+        std::mem::forget(h);
+    }
+    
     to_handle(r)
 }
 
 #[no_mangle]
 pub extern "C" fn pca_whitening(hmatrix: &MatrixHandle, svd_h: &SVDHandle) -> MatrixHandle {
-    let m = *from_handle(*hmatrix);
-    let (u,s,_) = svd_components(svd_h);
+    let m = from_handle(*hmatrix);
+    let (u,s,v) = svd_components(svd_h);
     let r = whitening::pca_whitening(&m, &u, &s);
+    
+    for h in &[m,u,s,v]{ 
+        std::mem::forget(h);
+    }
+
     to_handle(r)
 }
 
 #[no_mangle]
 pub extern "C" fn zca_whitening(hmatrix: &MatrixHandle, svd_h: &SVDHandle) -> MatrixHandle {
-    let m = *from_handle(*hmatrix);
-    let (u,s,_) = svd_components(svd_h);
+    let m = from_handle(*hmatrix);
+    let (u,s,v) = svd_components(svd_h);
     let r = whitening::zca_whitening(&m, &u, &s);
+    
+    for h in &[m,u,s,v] { 
+        std::mem::forget(h);
+    }
+    
     to_handle(r)
 }
 
