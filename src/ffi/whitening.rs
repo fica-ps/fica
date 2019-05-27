@@ -44,7 +44,7 @@ pub extern "C" fn reduced_dimension_repr(
 #[no_mangle]
 pub extern "C" fn pca_whitening(hmatrix: &MatrixHandle, svd_h: &SVDHandle) -> MatrixHandle {
     let m = *from_handle(*hmatrix);
-    let (u,s,_) = svd2mat(svd_h);
+    let (u,s,_) = svd_components(svd_h);
     let r = whitening::pca_whitening(&m, &u, &s);
     to_handle(r)
 }
@@ -52,7 +52,7 @@ pub extern "C" fn pca_whitening(hmatrix: &MatrixHandle, svd_h: &SVDHandle) -> Ma
 #[no_mangle]
 pub extern "C" fn zca_whitening(hmatrix: &MatrixHandle, svd_h: &SVDHandle) -> MatrixHandle {
     let m = *from_handle(*hmatrix);
-    let (u,s,_) = svd2mat(svd_h);
+    let (u,s,_) = svd_components(svd_h);
     let r = whitening::zca_whitening(&m, &u, &s);
     to_handle(r)
 }
