@@ -16,16 +16,15 @@ pub extern "C" fn fast_ica(
     let fid_enum: ContrastFunctionId = unsafe { std::mem::transmute(cfid as u8) };
 
     let wmat = &whitened_matrix.0.into();
-    
-    let result = 
-        fastica::fast_ica(
-            wmat,
-            n_components,
-            max_iter,
-            conv_threshold,
-            alpha,
-            fid_enum,
-        );
+
+    let result = fastica::fast_ica(
+        wmat,
+        n_components,
+        max_iter,
+        conv_threshold,
+        alpha,
+        fid_enum,
+    );
 
     MatrixHandle::from(result)
 }
