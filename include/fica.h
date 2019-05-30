@@ -5,15 +5,21 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef void *MatrixHandle;
+typedef struct
+{
+    int64_t _0;
+} MatrixHandle;
 
-typedef struct {
+typedef struct
+{
     MatrixHandle u;
     MatrixHandle s;
     MatrixHandle v;
 } SVDHandle;
 
-MatrixHandle create_matrix(float *values, uint64_t rows, uint64_t cols);
+void copy_matrix(const MatrixHandle *hmatrix, float *to);
+
+MatrixHandle create_matrix(float *values, uint64_t cols, uint64_t rows);
 
 MatrixHandle fast_ica(const MatrixHandle *whitened_matrix,
                       uint64_t n_components,
@@ -26,7 +32,9 @@ void free_handle(MatrixHandle hmatrix);
 
 void free_svd_handle(SVDHandle hsvd);
 
-void get_matrix(MatrixHandle hmatrix, float *to, uintptr_t *size);
+void get_matrix(MatrixHandle hmatrix, float *to);
+
+void get_size(const MatrixHandle *hmatrix, uint64_t *cols, uint64_t *rows);
 
 SVDHandle normalized_svd(const MatrixHandle *hmatrix);
 
