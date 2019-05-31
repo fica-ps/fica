@@ -4,7 +4,7 @@ use super::ffi_utils::*;
 
 #[no_mangle]
 pub extern "C" fn normalized_svd(hmatrix: MatrixHandle) -> SVDHandle {
-    let mat = handle2Mat(hmatrix);
+    let mat = handle2mat(hmatrix);
     let (u, s, v) = whitening::normalized_svd(&*mat);
     
     std::mem::forget(mat);
@@ -20,8 +20,8 @@ pub extern "C" fn rotated_data_matrix(
     hmatrix: MatrixHandle,
     h_svd_u: MatrixHandle,
 ) -> MatrixHandle {
-    let m = handle2Mat(hmatrix);
-    let svd_u = handle2Mat(h_svd_u);
+    let m = handle2mat(hmatrix);
+    let svd_u = handle2mat(h_svd_u);
 
     let r = whitening::rotated_data_matrix(&*m, &*svd_u);
 
@@ -36,8 +36,8 @@ pub extern "C" fn reduced_dimension_repr(
     ncols: u64,
 ) -> MatrixHandle {
 
-    let m = handle2Mat(hmatrix);
-    let svd_u = handle2Mat(h_svd_u);
+    let m = handle2mat(hmatrix);
+    let svd_u = handle2mat(h_svd_u);
 
     let r = whitening::reduced_dimension_repr(&*m, &*svd_u, ncols);
     forget_many(&[m,svd_u]);    
@@ -46,8 +46,8 @@ pub extern "C" fn reduced_dimension_repr(
 
 #[no_mangle]
 pub extern "C" fn pca_whitening(hmatrix: MatrixHandle, svd_h: &SVDHandle) -> MatrixHandle {
-    let m = handle2Mat(hmatrix);
-    let (u,s) = (handle2Mat(svd_h.u), handle2Mat(svd_h.s));
+    let m = handle2mat(hmatrix);
+    let (u,s) = (handle2mat(svd_h.u), handle2mat(svd_h.s));
     let r = whitening::pca_whitening(&*m, &*u, &*s);
 
     forget_many(&[m,u,s]);
@@ -57,8 +57,8 @@ pub extern "C" fn pca_whitening(hmatrix: MatrixHandle, svd_h: &SVDHandle) -> Mat
 
 #[no_mangle]
 pub extern "C" fn zca_whitening(hmatrix: MatrixHandle, svd_h: SVDHandle) -> MatrixHandle {
-    let m = handle2Mat(hmatrix);
-    let (u,s) = (handle2Mat(svd_h.u), handle2Mat(svd_h.s));
+    let m = handle2mat(hmatrix);
+    let (u,s) = (handle2mat(svd_h.u), handle2mat(svd_h.s));
     let r = whitening::zca_whitening(&*m, &*u, &*s);
 
     forget_many(&[m,u,s]);

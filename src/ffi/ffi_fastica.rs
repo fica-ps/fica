@@ -15,7 +15,7 @@ pub extern "C" fn fast_ica(
 
     let fid_enum: ContrastFunctionId = unsafe { std::mem::transmute(cfid as u8) };
 
-    let wmat = handle2Mat(whitened_matrix);
+    let wmat = handle2mat(whitened_matrix);
 
     let result = fastica::fast_ica(
         &*wmat,
