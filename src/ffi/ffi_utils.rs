@@ -1,52 +1,37 @@
 use crate::data::Matrix;
 use arrayfire::Backend;
+use std::ffi::c_void;
 
 const BACKENDS: [Backend; 3] = [Backend::OPENCL, Backend::CUDA, Backend::CPU];
 
-#[repr(C)]
-pub struct MatrixHandle(pub i64);
+pub type MatrixHandle = *mut c_void;
 
-impl MatrixHandle {
-
-    pub fn from(mat: Matrix) -> MatrixHandle {
-        let id = mat.get();
-        std::mem::forget(mat);
-        MatrixHandle(id)
-    }
-
-    pub fn get_matrix(self) -> Matrix {
-        self.0.into()
-    }
+pub fn handle(mat: Matrix) -> MatrixHandle {
+    handle_boxed(Box::new(mat))
 }
 
-#[repr(C)]
-pub struct SVDHandle {
-    pub u: MatrixHandle,
-    pub s: MatrixHandle,
-    pub v: MatrixHandle,
+pub fn handle_boxed(bmat: Box<Matrix>) -> MatrixHandle {
+    Box::into_raw(bmat) as MatrixHandle
 }
 
-impl SVDHandle {
-    pub fn get_components(self) -> (Matrix, Matrix, Matrix) {
-        (
-            self.u.get_matrix(),
-            self.s.get_matrix(),
-            self.v.get_matrix(),
-        )
+pub fn handle2Mat(hmatrix: MatrixHandle) -> Box<Matrix> {
+    unsafe { Box::from_raw(hmatrix as *mut Matrix) }
+}
+
+pub fn forget_many(mhandles: &[Box<Matrix>]) {
+    for h in mhandles {
+        std::mem::forget(h);
     }
 }
 
 
 #[no_mangle]
 pub extern "C" fn free_handle(hmatrix: MatrixHandle) {
-    hmatrix.get_matrix();
+    let x: Box<Matrix> = handle2Mat(hmatrix);
+    std::mem::drop(x);
 }
 
 #[no_mangle]
-pub extern "C" fn free_svd_handle(hsvd: SVDHandle) {
-    hsvd.get_components();
-}
-
 pub extern "C" fn set_backend(backend_id: i32) {
     arrayfire::set_backend(BACKENDS[backend_id as usize]);
 }
@@ -63,12 +48,12 @@ pub extern "C" fn create_matrix(values: *mut f32, cols: u64, rows: u64) -> Matri
         cols,
     );
 
-    MatrixHandle::from(mat)
+    handle(mat)
 }
 
 #[no_mangle]
-pub extern "C" fn get_size(hmatrix: &MatrixHandle, cols: &mut u64, rows: &mut u64) {
-    let m: &Matrix = &hmatrix.0.into();
+pub extern "C" fn get_size(hmatrix: MatrixHandle, cols: &mut u64, rows: &mut u64) {
+    let m: Box<Matrix> = handle2Mat(hmatrix);
     let (c, r) = {
         let dimobj = m.dims();
         let dimarr = dimobj.get();
@@ -77,30 +62,58 @@ pub extern "C" fn get_size(hmatrix: &MatrixHandle, cols: &mut u64, rows: &mut u6
 
     *cols = c;
     *rows = r;
+    std::mem::forget(m);
 }
 
 #[no_mangle]
-pub extern "C" fn copy_matrix(hmatrix: &MatrixHandle, to: *mut f32) {
+pub extern "C" fn copy_matrix(hmatrix: MatrixHandle, to: *mut f32) {
     use std::slice;
 
-    let m: &Matrix = &hmatrix.0.into();
-
+    let m: Box<Matrix> = handle2Mat(hmatrix);;
     m.host(unsafe { slice::from_raw_parts_mut(to, m.elements()) });
+    std::mem::forget(m);
 }
 
 #[no_mangle]
-pub extern "C" fn get_matrix(hmatrix: MatrixHandle, to: *mut f32) {
+pub extern "C" fn move_matrix(hmatrix: MatrixHandle, to: *mut f32) {
     use std::slice;
 
-    let m = hmatrix.get_matrix();
+    let m: Box<Matrix> = handle2Mat(hmatrix);
 
 
     m.host(unsafe { slice::from_raw_parts_mut(to, m.elements()) });
+
+    free_handle(hmatrix);
 }
+
 #[no_mangle]
-pub extern "C" fn print_matrix(hmatrix: &MatrixHandle) {
+pub extern "C" fn print_matrix(hmatrix: MatrixHandle) {
     use arrayfire::print;
 
-    let m: &Matrix = &hmatrix.0.into();;
-    print(m);
+    let m: Box<Matrix> = handle2Mat(hmatrix);
+
+    print(&m);
+
+    std::mem::forget(m);
+}
+
+#[repr(C)]
+pub struct SVDHandle {
+    pub u: MatrixHandle,
+    pub s: MatrixHandle,
+    pub v: MatrixHandle,
+}
+
+impl SVDHandle {
+
+    pub fn get_components(self) -> (Box<Matrix>, Box<Matrix>, Box<Matrix>) {
+        (handle2Mat(self.u), handle2Mat(self.s), handle2Mat(self.v))
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn free_svd_handle(hsvd: SVDHandle) {
+    for h in &[hsvd.s, hsvd.u, hsvd.v] {
+        free_handle(*h)
+    }
 }
