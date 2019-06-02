@@ -20,7 +20,7 @@ Then clone this repo using:
 
 1. ``git clone https://github.com/fica-ps/fica.git`` or ``git clone https://github.com/fica-ps/fica.git <directory>`` to clone into ``<directory>``.
 
-2. 3hange directory into the directory where the repo was cloned.
+2. Change directory into the directory where the repo was cloned.
 
 3. Finally build it using the command ``cargo build --release``.
 
