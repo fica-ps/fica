@@ -3,7 +3,7 @@ use arrayfire::*;
 use super::data::*;
 
 // normalization constant = exp(1.0, -5).
-static EPSILON: f32 = 0.00001_f32;
+static EPSILON: f32 = 0.00001;
 
 // *** data centering and SVD ***
 pub fn normalized_svd(mat: &Matrix) -> SVD {
@@ -45,7 +45,7 @@ pub fn pca_whitening(mat: &Matrix, sigma_svd_u: &Matrix, sigma_svd_s: &Matrix) -
     let mut result: Matrix = diag_create(sigma_svd_s, 0); // r = diag(S)
     result = add(&result, &EPSILON, true); // r = r + epsilon
     result = sqrt(&result); // r = sqrt(r)
-    result = div(&1.0_f32, &result, true); // r = 1.0 / r
+    result = div(&1.0, &result, true); // r = 1.0 / r
     result = diag_create(&result, 0); // r = diag(r)
     result = matmul(&result, sigma_svd_u, MatProp::NONE, MatProp::TRANS); // r = r * U'
 

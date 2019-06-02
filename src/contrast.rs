@@ -8,7 +8,7 @@ pub enum ContrastFunctionId {
     EXP = 2,
 }
 
-pub type ContrastFunc = fn(&Matrix, f32) -> (Matrix, Matrix);
+pub type ContrastFunc = fn(&Matrix, f64) -> (Matrix, Matrix);
 
 const CONTRAST_FUNCTIONS: [ContrastFunc; 3] = [logcosh, kurtosis, exponential];
 
@@ -16,7 +16,7 @@ pub fn get_contrast_function(fid: ContrastFunctionId) -> ContrastFunc {
     CONTRAST_FUNCTIONS[fid as usize]
 }
 
-fn logcosh(mat: &Matrix, alpha: f32) -> (Matrix, Matrix) {
+fn logcosh(mat: &Matrix, alpha: f64) -> (Matrix, Matrix) {
     let factored_mat = mul(mat, &alpha, true);
 
     // 1/alpha * log(cosh(alph * u))
@@ -29,14 +29,14 @@ fn logcosh(mat: &Matrix, alpha: f32) -> (Matrix, Matrix) {
     (g, dg)
 }
 
-fn kurtosis(mat: &Matrix, alpha: f32) -> (Matrix, Matrix) {
+fn kurtosis(mat: &Matrix, alpha: f64) -> (Matrix, Matrix) {
     (
         mul(&(1.0 / alpha), &pow(mat, &alpha, true), true),
         pow(mat, &(alpha - 1.0), true),
     )
 }
 
-fn exponential(mat: &Matrix, alpha: f32) -> (Matrix, Matrix) {
+fn exponential(mat: &Matrix, alpha: f64) -> (Matrix, Matrix) {
     let e = {
         let mut temp = pow(mat, &alpha, true);
         temp = sub(&0, &temp, true);

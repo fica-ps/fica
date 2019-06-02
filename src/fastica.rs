@@ -30,8 +30,8 @@ pub fn fast_ica(
     whitened_matrix: &Matrix,
     n_components: u64,
     max_iter: u64,
-    conv_threshold: f32,
-    alpha: f32,
+    conv_threshold: f64,
+    alpha: f64,
     cfid: ContrastFunctionId,
 ) -> Matrix {
     let cfunc = get_contrast_function(cfid);
@@ -40,7 +40,7 @@ pub fn fast_ica(
 
     for comp_i in 0..n_components {
         // weight column vector
-        let mut weights_col: Matrix = randu::<f32>(dim(n_components, 1));
+        let mut weights_col: Matrix = randu::<f64>(dim(n_components, 1));
 
         for _ in 0..max_iter {
             // calculate a new weight column
@@ -73,7 +73,7 @@ pub fn fast_ica(
     dot(&ret_weights, whitened_matrix, MatProp::NONE, MatProp::NONE)
 }
 
-fn distance(w: &Matrix, nw: &Matrix) -> f32 {
+fn distance(w: &Matrix, nw: &Matrix) -> f64 {
     /*
        dist = w1 .* wp;
        dist = sum(dist)
@@ -97,12 +97,12 @@ fn distance(w: &Matrix, nw: &Matrix) -> f32 {
         }
 
         let temp = abs(&buffer);
-        let temp = sub(&temp, &(1.0 as f32), true);
+        let temp = sub(&temp, &1.0, true);
         abs(&temp)
     };
 
     let (max_val, _, _) = imax_all(&dist);
-    max_val as f32
+    max_val 
 }
 
 fn gram_schmit_decorrelation(nw: &Matrix, wcol: &Matrix) -> Matrix {
@@ -121,7 +121,7 @@ fn update_weights(
     weights: &Matrix,
     whitened_mat: &Matrix,
     cf: &ContrastFunc,
-    alpha: f32,
+    alpha: f64,
 ) -> Matrix {
     let (g, dg) = {
         let temp = dot(weights, whitened_mat, MatProp::TRANS, MatProp::NONE);

@@ -38,7 +38,7 @@ pub extern "C" fn set_backend(backend_id: i32) {
 
 
 #[no_mangle]
-pub extern "C" fn create_matrix(values: *mut f32, cols: u64, rows: u64) -> MatrixHandle {
+pub extern "C" fn create_matrix(values: *mut f64, cols: u64, rows: u64) -> MatrixHandle {
     use crate::data::new_matrix;
     use std::slice;
 
@@ -47,6 +47,7 @@ pub extern "C" fn create_matrix(values: *mut f32, cols: u64, rows: u64) -> Matri
         rows,
         cols,
     );
+
 
     handle(mat)
 }
@@ -66,16 +67,20 @@ pub extern "C" fn get_size(hmatrix: MatrixHandle, cols: &mut u64, rows: &mut u64
 }
 
 #[no_mangle]
-pub extern "C" fn copy_matrix(hmatrix: MatrixHandle, to: *mut f32) {
+pub extern "C" fn copy_matrix(hmatrix: MatrixHandle, to: *mut f64, size: usize) {
+    use std::mem;
     use std::slice;
 
-    let m: Box<Matrix> = handle2mat(hmatrix);;
-    m.host(unsafe { slice::from_raw_parts_mut(to, m.elements()) });
-    std::mem::forget(m);
+    let m: Box<Matrix> = handle2mat(hmatrix);
+    let slc = unsafe { slice::from_raw_parts_mut(to, size) };
+
+    m.host(slc);
+    mem::forget(m);
+    println!("Array copied successfuly");
 }
 
 #[no_mangle]
-pub extern "C" fn move_matrix(hmatrix: MatrixHandle, to: *mut f32) {
+pub extern "C" fn move_matrix(hmatrix: MatrixHandle, to: *mut f64) {
     use std::slice;
 
     let m: Box<Matrix> = handle2mat(hmatrix);

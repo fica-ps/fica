@@ -15,15 +15,15 @@ struct SVDHandle {
 
 extern "C" {
 
-void copy_matrix(MatrixHandle hmatrix, float *to);
+void copy_matrix(MatrixHandle hmatrix, double *to, uintptr_t size);
 
-MatrixHandle create_matrix(float *values, uint64_t cols, uint64_t rows);
+MatrixHandle create_matrix(double *values, uint64_t cols, uint64_t rows);
 
 MatrixHandle fast_ica(MatrixHandle whitened_matrix,
                       uint64_t n_components,
                       uint64_t max_iter,
-                      float conv_threshold,
-                      float alpha,
+                      double conv_threshold,
+                      double alpha,
                       uint32_t cfid);
 
 void free_handle(MatrixHandle hmatrix);
@@ -32,7 +32,7 @@ void free_svd_handle(SVDHandle hsvd);
 
 void get_size(MatrixHandle hmatrix, uint64_t *cols, uint64_t *rows);
 
-void move_matrix(MatrixHandle hmatrix, float *to);
+void move_matrix(MatrixHandle hmatrix, double *to);
 
 SVDHandle normalized_svd(MatrixHandle hmatrix);
 
