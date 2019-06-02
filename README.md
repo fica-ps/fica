@@ -44,20 +44,20 @@ There are two header files one for linking with C consumer, the other to link wi
 int main()
 {
 	
-	double arr[6]   = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-	Matrix mhandle = create_matrix(arr, 3, 2);
+	double arr[6]   = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+	Matrix mat = create_matrix(arr, 3, 2);
 	
-	print_matrix(mhandle);
+	print_matrix(mat);
 
 	double ret_mat[6] = {0.0};
 	uint64_t cols = 0;
 	uint64_t lines = 0;
 
-	matrix_dims(mhandle, &cols, &lines);
+	matrix_dims(mat, &cols, &lines);
 
-	copy_matrix(mhandle, ret_mat, cols * lines); 
-	free_matrix(mhandle); 
-	// or move_matrix(mhandler, ret_mat, cols * lines) - which frees the handle.
+	copy_matrix(mat, ret_mat, cols * lines); 
+	free_matrix(mat); 
+	// or use ``move_matrix(mat, ret_mat, cols * lines)`` - which frees the Matrix.
 	
 
 	printf("Matrix %lldx%lld:\n", cols, lines);
