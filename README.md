@@ -45,7 +45,7 @@ int main()
 {
 	
 	double arr[6]   = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-	MatrixHandle mhandle = create_matrix(arr, 3, 2);
+	Matrix mhandle = create_matrix(arr, 3, 2);
 	
 	print_matrix(mhandle);
 
@@ -53,12 +53,11 @@ int main()
 	uint64_t cols = 0;
 	uint64_t lines = 0;
 
-	get_size(mhandle, &cols, &lines);
-
+	matrix_dims(mhandle, &cols, &lines);
 
 	copy_matrix(mhandle, ret_mat, cols * lines); 
-	free_handle(mhandle); 
-	// or move_matrix(mhandler, ret_mat, 6) - which frees the handle.
+	free_matrix(mhandle); 
+	// or move_matrix(mhandler, ret_mat, cols * lines) - which frees the handle.
 	
 
 	printf("Matrix %lldx%lld:\n", cols, lines);
