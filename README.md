@@ -28,7 +28,7 @@ The necessary SO/DLL and static library stubs will be generated on ``<cloned-dir
 
 ## header file location
 
-There are two header files one for linking with C consumer the other to link with a C++ consumer:
+There are two header files one for linking with C consumer, the other to link with a C++ consumer:
 
 * C header: ``<cloned-directory>/include/c/``
 
