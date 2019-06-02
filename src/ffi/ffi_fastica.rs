@@ -2,13 +2,13 @@ use super::ffi_utils::*;
 
 #[no_mangle]
 pub extern "C" fn fast_ica(
-    whitened_matrix: MatrixHandle,
+    whitened_matrix: Matrix,
     n_components: u64,
     max_iter: u64,
     conv_threshold: f64,
     alpha: f64,
     cfid: u32,
-) -> MatrixHandle {
+) -> Matrix {
 
     use crate::contrast::ContrastFunctionId;
     use crate::fastica;
