@@ -26,7 +26,7 @@ pub fn forget_many(mhandles: &[Box<data::Matrix>]) {
 
 
 #[no_mangle]
-pub extern "C" fn free_handle(hmatrix: Matrix) {
+pub extern "C" fn free_matrix(hmatrix: Matrix) {
     let x: Box<data::Matrix> = handle2mat(hmatrix);
     std::mem::drop(x);
 }
@@ -53,7 +53,7 @@ pub extern "C" fn create_matrix(values: *mut f64, cols: u64, rows: u64) -> Matri
 }
 
 #[no_mangle]
-pub extern "C" fn get_size(hmatrix: Matrix, cols: &mut u64, rows: &mut u64) {
+pub extern "C" fn matrix_dims(hmatrix: Matrix, cols: &mut u64, rows: &mut u64) {
     let m: Box<data::Matrix> = handle2mat(hmatrix);
     let (c, r) = {
         let dimobj = m.dims();
@@ -99,21 +99,21 @@ pub extern "C" fn print_matrix(hmatrix: Matrix) {
 }
 
 #[repr(C)]
-pub struct SVDHandle {
+pub struct SVD {
     pub u: Matrix,
     pub s: Matrix,
     pub v: Matrix,
 }
 
-impl SVDHandle {
+impl SVD {
     pub fn get_components(self) -> (Box<data::Matrix>, Box<data::Matrix>, Box<data::Matrix>) {
         (handle2mat(self.u), handle2mat(self.s), handle2mat(self.v))
     }
 }
 
 #[no_mangle]
-pub extern "C" fn free_svd_handle(hsvd: SVDHandle) {
+pub extern "C" fn free_svd(hsvd: SVD) {
     for h in &[hsvd.s, hsvd.u, hsvd.v] {
-        free_handle(*h)
+        free_matrix(*h)
     }
 }

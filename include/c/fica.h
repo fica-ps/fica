@@ -5,45 +5,43 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef void *MatrixHandle;
+typedef void *Matrix;
 
 typedef struct {
-    MatrixHandle u;
-    MatrixHandle s;
-    MatrixHandle v;
-} SVDHandle;
+    Matrix u;
+    Matrix s;
+    Matrix v;
+} SVD;
 
-void copy_matrix(MatrixHandle hmatrix, double *to, uintptr_t size);
+void copy_matrix(Matrix hmatrix, double *to, uintptr_t size);
 
-MatrixHandle create_matrix(double *values, uint64_t cols, uint64_t rows);
+Matrix create_matrix(double *values, uint64_t cols, uint64_t rows);
 
-MatrixHandle fast_ica(MatrixHandle whitened_matrix,
-                      uint64_t n_components,
-                      uint64_t max_iter,
-                      double conv_threshold,
-                      double alpha,
-                      uint32_t cfid);
+Matrix fast_ica(Matrix whitened_matrix,
+                uint64_t n_components,
+                uint64_t max_iter,
+                double conv_threshold,
+                double alpha,
+                uint32_t cfid);
 
-void free_handle(MatrixHandle hmatrix);
+void free_matrix(Matrix hmatrix);
 
-void free_svd_handle(SVDHandle hsvd);
+void free_svd(SVD hsvd);
 
-void get_size(MatrixHandle hmatrix, uint64_t *cols, uint64_t *rows);
+void matrix_dims(Matrix hmatrix, uint64_t *cols, uint64_t *rows);
 
-void move_matrix(MatrixHandle hmatrix, double *to, uintptr_t size);
+void move_matrix(Matrix hmatrix, double *to, uintptr_t size);
 
-SVDHandle normalized_svd(MatrixHandle hmatrix);
+SVD normalized_svd(Matrix matrix);
 
-MatrixHandle pca_whitening(MatrixHandle hmatrix, const SVDHandle *svd_h);
+Matrix pca_whitening(Matrix matrix, const SVD *svd);
 
-void print_matrix(MatrixHandle hmatrix);
+void print_matrix(Matrix hmatrix);
 
-MatrixHandle reduced_dimension_repr(MatrixHandle hmatrix,
-                                    MatrixHandle h_svd_u,
-                                    uint64_t ncols);
+Matrix reduced_dimension_repr(Matrix matrix, Matrix svd_u, uint64_t ncols);
 
-MatrixHandle rotated_data_matrix(MatrixHandle hmatrix, MatrixHandle h_svd_u);
+Matrix rotated_data_matrix(Matrix matrix, Matrix svd_u);
 
 void set_backend(uintptr_t backend_id);
 
-MatrixHandle zca_whitening(MatrixHandle hmatrix, SVDHandle svd_h);
+Matrix zca_whitening(Matrix matrix, SVD svd);
