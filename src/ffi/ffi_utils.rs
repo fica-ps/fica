@@ -32,8 +32,8 @@ pub extern "C" fn free_handle(hmatrix: MatrixHandle) {
 }
 
 #[no_mangle]
-pub extern "C" fn set_backend(backend_id: i32) {
-    arrayfire::set_backend(BACKENDS[backend_id as usize]);
+pub extern "C" fn set_backend(backend_id: usize) {
+    arrayfire::set_backend(BACKENDS[backend_id]);
 }
 
 
@@ -83,7 +83,6 @@ pub extern "C" fn move_matrix(hmatrix: MatrixHandle, to: *mut f64, size: usize) 
     use std::slice;
 
     let m: Box<Matrix> = handle2mat(hmatrix);
-
 
     m.host(unsafe { slice::from_raw_parts_mut(to, size) });
 }

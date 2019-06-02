@@ -46,7 +46,7 @@ MatrixHandle reduced_dimension_repr(MatrixHandle hmatrix,
 
 MatrixHandle rotated_data_matrix(MatrixHandle hmatrix, MatrixHandle h_svd_u);
 
-void set_backend(int32_t backend_id);
+void set_backend(uintptr_t backend_id);
 
 MatrixHandle zca_whitening(MatrixHandle hmatrix, SVDHandle svd_h);
 
