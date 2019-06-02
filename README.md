@@ -34,7 +34,7 @@ There are two header files one for linking with C consumer, the other to link wi
 
 * Cpp header: ``<cloned-directory>/include/cpp/``
 
-## Example: transforming an array into MatrixHandler and back:
+## Example: transforming an array into Matrix and back:
 
 ```C
 #include <stdio.h>
