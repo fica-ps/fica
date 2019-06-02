@@ -76,19 +76,16 @@ pub extern "C" fn copy_matrix(hmatrix: MatrixHandle, to: *mut f64, size: usize) 
 
     m.host(slc);
     mem::forget(m);
-    println!("Array copied successfuly");
 }
 
 #[no_mangle]
-pub extern "C" fn move_matrix(hmatrix: MatrixHandle, to: *mut f64) {
+pub extern "C" fn move_matrix(hmatrix: MatrixHandle, to: *mut f64, size: usize) {
     use std::slice;
 
     let m: Box<Matrix> = handle2mat(hmatrix);
 
 
-    m.host(unsafe { slice::from_raw_parts_mut(to, m.elements()) });
-
-    free_handle(hmatrix);
+    m.host(unsafe { slice::from_raw_parts_mut(to, size) });
 }
 
 #[no_mangle]
