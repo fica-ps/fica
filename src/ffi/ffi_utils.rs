@@ -107,7 +107,6 @@ pub struct SVDHandle {
 }
 
 impl SVDHandle {
-
     pub fn get_components(self) -> (Box<Matrix>, Box<Matrix>, Box<Matrix>) {
         (handle2mat(self.u), handle2mat(self.s), handle2mat(self.v))
     }

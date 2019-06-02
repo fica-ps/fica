@@ -4,5 +4,5 @@ pub mod ffi_utils;
 pub mod ffi_whitening;
 
 // generate ffi header:
-// cbindgen -o .\include\fica.h -l C
-// cbindgen -o .\include\fica.h -l C++
+// windows cmd: cbindgen -l C -o include/c/fica.h && cbindgen -l C++ -o include/cpp/fica.h
+// windows powershell: cbindgen -l C -o include/c/fica.h; cbindgen -l C++ -o include/cpp/fica.h
