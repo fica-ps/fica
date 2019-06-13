@@ -5,7 +5,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef void *Matrix;
+typedef struct {
+    uint64_t _0;
+} Matrix;
 
 typedef struct {
     Matrix u;
@@ -13,7 +15,7 @@ typedef struct {
     Matrix v;
 } SVD;
 
-void copy_matrix(Matrix hmatrix, double *to, uintptr_t size);
+void copy_matrix(Matrix matrix, double *to, uintptr_t size);
 
 Matrix create_matrix(double *values, uint64_t cols, uint64_t rows);
 
@@ -24,19 +26,19 @@ Matrix fast_ica(Matrix whitened_matrix,
                 double alpha,
                 uint32_t cfid);
 
-void free_matrix(Matrix hmatrix);
+void free_matrix(Matrix matrix);
 
-void free_svd(SVD hsvd);
+void free_svd(SVD svd);
 
 void matrix_dims(Matrix hmatrix, uint64_t *cols, uint64_t *rows);
 
-void move_matrix(Matrix hmatrix, double *to, uintptr_t size);
+void move_matrix(Matrix matrix, double *to, uintptr_t size);
 
 SVD normalized_svd(Matrix matrix);
 
-Matrix pca_whitening(Matrix matrix, const SVD *svd);
+Matrix pca_whitening(Matrix matrix, SVD svd);
 
-void print_matrix(Matrix hmatrix);
+void print_matrix(Matrix matrix);
 
 Matrix reduced_dimension_repr(Matrix matrix, Matrix svd_u, uint64_t ncols);
 

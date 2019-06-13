@@ -1,7 +1,7 @@
-pub mod ffi_fastica;
-
-pub mod ffi_utils;
-pub mod ffi_whitening;
+pub mod fastica;
+pub mod utils;
+pub mod whitening;
+pub mod data;
 
 // generate ffi header:
 // windows cmd: cbindgen -l C -o include/c/fica.h && cbindgen -l C++ -o include/cpp/fica.h

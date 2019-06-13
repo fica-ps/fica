@@ -1,6 +1,6 @@
 use super::contrast::*;
 use super::data::*;
-
+use super::utils::normalize;
 use arrayfire::*;
 
 /**
@@ -27,7 +27,7 @@ use arrayfire::*;
  *   
  */
 pub fn fast_ica(
-    whitened_matrix: &Matrix,
+    matrix: &Matrix,
     n_components: u64,
     max_iter: u64,
     conv_threshold: f64,
@@ -39,39 +39,41 @@ pub fn fast_ica(
     let mut ret_weights = empty_matrix(n_components, n_components);
 
     for comp_i in 0..n_components {
-        // weight column vector
-        let mut weights_col: Matrix = randu::<f64>(dim(n_components, 1));
+        let mut wp = col(&matrix, comp_i);
+        
+        // decorrelation
+        if comp_i > 1 {
+            
+            let mut temp = Matrix::new_empty(wp.dims());
+            
+            for i in 0..comp_i {
+                let rwi = col(&ret_weights, i);
+                let k = {
+                    let temp = mul(&wp, &rwi , true);
+                    sum(&temp, 0)
+                };
 
-        for _ in 0..max_iter {
-            // calculate a new weight column
-            let n_weights_col = {
-                let temp = update_weights(&weights_col, whitened_matrix, &cfunc, alpha);
-
-                if comp_i >= 1 {
-                    // Avoid converging in a local minima after the first iteration
-                    let slice_col = col(&weights_col, comp_i);
-
-                    gram_schmit_decorrelation(&temp, &slice_col)
-                } else {
-                    temp
-                }
-            };
-
-            let conv_distance = distance(&weights_col, &n_weights_col);
-
-            weights_col = n_weights_col;
-
-            if conv_distance < conv_threshold {
-                // set ret_weights component column to new weights
-                ret_weights = set_col(&ret_weights, &weights_col, comp_i);
-                break;
+                temp = add(&temp, &k, true);
+                temp = matmul(&temp, &rwi, MatProp::NONE, MatProp::NONE);
             }
+
+            wp = sub(&wp, &temp, false);
         }
+
+        wp = normalize(&wp);
+        
+        let converged = false;
+        while !converged {
+            let wx = matmul(&wp, &matrix, MatProp::TRANS, MatProp::NONE);
+            
+        }      
     }
 
-    // return estimated components
-    dot(&ret_weights, whitened_matrix, MatProp::NONE, MatProp::NONE)
+    unimplemented!()
 }
+
+    
+
 
 fn distance(w: &Matrix, nw: &Matrix) -> f64 {
     /*
@@ -134,3 +136,4 @@ fn update_weights(
     };
     new_weights
 }
+

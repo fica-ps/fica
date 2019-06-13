@@ -1,4 +1,7 @@
-use super::ffi_utils::*;
+use super::data::*;
+use crate::data::Matrix as AFMatrix;
+use crate::contrast::ContrastFunctionId;
+use crate::fastica;
 
 #[no_mangle]
 pub extern "C" fn fast_ica(
@@ -10,21 +13,18 @@ pub extern "C" fn fast_ica(
     cfid: u32,
 ) -> Matrix {
 
-    use crate::contrast::ContrastFunctionId;
-    use crate::fastica;
-
     let fid_enum: ContrastFunctionId = unsafe { std::mem::transmute(cfid as u8) };
 
-    let wmat = handle2mat(whitened_matrix);
-
+    let wmat = AFMatrix::from_handle(whitened_matrix);
+    
     let result = fastica::fast_ica(
-        &*wmat,
+        &wmat,
         n_components,
         max_iter,
         conv_threshold,
         alpha,
         fid_enum,
     );
-
-    handle(result)
+    
+    result.to_handle()
 }

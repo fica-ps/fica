@@ -1,20 +1,20 @@
 use arrayfire::*;
-
 use super::data::*;
 
 // normalization constant = exp(1.0, -5).
-static EPSILON: f32 = 0.00001;
+static EPSILON: f64 = 0.00001;
 
 // *** data centering and SVD ***
 pub fn normalized_svd(mat: &Matrix) -> SVD {
     let norm_mat = {
         let centered_mat = sub(mat, &mean(mat, 0 as i64), true);
         let cm_transpose_mul = matmul(&centered_mat, &centered_mat, MatProp::NONE, MatProp::TRANS);
-        let inv_col_size = 1.0 / centered_mat.dims().get()[1] as f32;
+        let inv_col_size = 1.0 / centered_mat.dims().get()[1] as f64;
 
         &mul(&cm_transpose_mul, &inv_col_size, true)
     };
-    svd(norm_mat)
+    let (u, s, v) = svd(norm_mat);
+    SVD {u, s, v}
 }
 
 // *** data rotation ***
