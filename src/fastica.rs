@@ -1,6 +1,5 @@
 use super::contrast::*;
 use super::data::*;
-use super::utils::normalize;
 use arrayfire::*;
 
 /**
@@ -34,6 +33,7 @@ pub fn fast_ica(
     alpha: f64,
     cfid: ContrastFunctionId,
 ) -> Matrix {
+
     let cfunc = get_contrast_function(cfid);
 
     let mut ret_weights = empty_matrix(n_components, n_components);
@@ -43,29 +43,15 @@ pub fn fast_ica(
         
         // decorrelation
         if comp_i > 1 {
-            
-            let mut temp = Matrix::new_empty(wp.dims());
-            
-            for i in 0..comp_i {
-                let rwi = col(&ret_weights, i);
-                let k = {
-                    let temp = mul(&wp, &rwi , true);
-                    sum(&temp, 0)
-                };
-
-                temp = add(&temp, &k, true);
-                temp = matmul(&temp, &rwi, MatProp::NONE, MatProp::NONE);
-            }
-
-            wp = sub(&wp, &temp, false);
+            wp = decorrelate(&wp, &ret_weights, comp_i);
         }
-
         wp = normalize(&wp);
         
         let converged = false;
+
         while !converged {
             let wx = matmul(&wp, &matrix, MatProp::TRANS, MatProp::NONE);
-            
+
         }      
     }
 
@@ -73,7 +59,51 @@ pub fn fast_ica(
 }
 
     
+/*
+    
+    t = zeros(size(w1))
+    for u = 1:(i-1)
+        k = sum(w1 .* retW[u,:,])
+        t = t + k * retW[u,:,]
+    w1 - t
+*/
 
+fn decorrelate(col_mat: &Matrix, ret_w: &Matrix, iter: u64) -> Matrix {
+    let mut t = Matrix::new_empty(col_mat.dims());
+    
+    for col_i in 0..iter {
+        let rw_col_i = col(ret_w, col_i);
+        
+        let k = { 
+            let temp = mul(col_mat, &rw_col_i, true); 
+            sum(&temp,0) 
+        };
+        
+        t = {
+            let temp = matmul(&k, col_mat, MatProp::NONE, MatProp::NONE);
+            add(&t, &temp, true)
+        };
+
+    }
+
+    sub(col_mat, &t, false)
+}
+
+fn normalize(matrix: &Matrix) -> Matrix {
+    
+    let matrix_dims = matrix.dims();
+    
+    let ini: Matrix = Matrix::new_empty(matrix_dims);
+    
+    let reducer = |mat, idx| { 
+            let col_i     = col(matrix, idx);
+            let col_norm  = norm(&col_i, NormType::VECTOR_1, 0.0, 0.0);
+            let new_col   = div(&col_i, &col_norm, true);
+            set_col(&mat, &new_col, idx) 
+    };
+
+    (0..matrix_dims.get()[0]).fold(ini, reducer)
+}
 
 fn distance(w: &Matrix, nw: &Matrix) -> f64 {
     /*
@@ -105,18 +135,6 @@ fn distance(w: &Matrix, nw: &Matrix) -> f64 {
 
     let (max_val, _, _) = imax_all(&dist);
     max_val 
-}
-
-fn gram_schmit_decorrelation(nw: &Matrix, wcol: &Matrix) -> Matrix {
-    /*
-        x = dotProduct(w_new, W[col_i]')
-        x = dotProduct(x, W[col_i])
-        w_new - x
-    */
-
-    let mut rw = dot(nw, wcol, MatProp::NONE, MatProp::TRANS);
-    rw = dot(&rw, wcol, MatProp::NONE, MatProp::NONE);
-    sub(nw, &rw, false)
 }
 
 fn update_weights(

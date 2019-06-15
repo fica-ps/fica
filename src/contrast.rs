@@ -21,6 +21,7 @@ fn logcosh(mat: &Matrix, alpha: f64) -> (Matrix, Matrix) {
 
     // 1/alpha * log(cosh(alph * u))
     let g = log(&cosh(&factored_mat));
+    
     let g = mul(&(1.0 / alpha), &g, true);
 
     // np.tanh(alph * u)
