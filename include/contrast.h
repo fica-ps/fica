@@ -6,7 +6,6 @@
 #define FICA_CONTRAST_H
 
 #include <Eigen/Dense>
-#include "contrast.h"
 
 extern "C" {
 

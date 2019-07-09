@@ -2,7 +2,7 @@
 // Created by adriano on 7/2/19.
 //
 
-#include <../include/fastica.h>
+#include "../include/fastica.h"
 #include <iostream>
 
 using namespace Eigen;

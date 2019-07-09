@@ -2,7 +2,7 @@
 // Created by adriano on 7/9/19.
 //
 
-#include <../include/capi.h>
+#include "../include/capi.h"
 #include <Eigen/Dense>
 #include <iostream>
 

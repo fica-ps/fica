@@ -5,9 +5,7 @@
 #ifndef FICA_FASTICA_H
 #define FICA_FASTICA_H
 
-#include "fica.h"
 #include "contrast.h"
-
 
 extern "C" {
 
