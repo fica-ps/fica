@@ -1,7 +1,6 @@
 #include "../include/contrast.h"
 #include <Eigen/Dense>
 
-
 namespace contrast {
 
     static ContrastFunction CONTRAST_FUNCTIONS[2]  = {

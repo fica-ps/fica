@@ -1,7 +1,3 @@
-//
-// Created by adriano on 7/2/19.
-//
-
 #include "../include/fastica.h"
 #include <iostream>
 
@@ -34,7 +30,7 @@ VectorXd decorrelate(const VectorXd& row_mat, const MatrixXd& ret_w, size_t n_co
 MatrixXd *fast_ica_impl(
         const MatrixXd& matrix,
         const MatrixXd& ini_weights,
-        int n_components,
+        unsigned int n_components,
         double conv_threshold,
         double alpha,
         ContrastFunction contrast_function,

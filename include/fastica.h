@@ -7,18 +7,21 @@
 
 #include "contrast.h"
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 
     typedef struct {
         const Eigen::MatrixXd& matrix;
         const Eigen::MatrixXd& ini_weights;
-        int n_components;
+        unsigned int n_components;
         double conv_threshold;
         double alpha;
         ContrastFunctionId cont_func_id;
         bool verbose;
     } ICA_Params;
 
+#ifdef __cplusplus
 }
 
 namespace fastica {
@@ -31,5 +34,6 @@ namespace fastica {
     );
 
 }
+#endif // C++ header files and definitions
 
 #endif //FICA_FASTICA_H

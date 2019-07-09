@@ -1,20 +1,18 @@
-//
-// Created by adriano on 7/8/19.
-//
-
 #ifndef FICA_CONTRAST_H
 #define FICA_CONTRAST_H
 
 #include <Eigen/Dense>
 
+#ifdef __cplusplus
 extern "C" {
-
+#endif
     typedef enum {
         LOGCOSH = 0,
         EXPONENTIAL = 1
     } ContrastFunctionId;
-
+#ifdef __cplusplus
 }
+
 
 namespace contrast {
 
@@ -28,5 +26,5 @@ namespace contrast {
     MatPair exp(const Eigen::MatrixXd& mat, double alpha);
 
 }
-
-#endif //FICA_CONTRAST_H
+#endif // C++ header files
+#endif // FICA_CONTRAST_H
