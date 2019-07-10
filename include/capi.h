@@ -13,6 +13,7 @@
 extern "C" {
 #endif
 
+
     typedef void* Matrix;
 
     Matrix new_matrix(const double* values, size_t rows, size_t cols);

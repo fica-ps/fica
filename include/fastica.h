@@ -6,17 +6,17 @@
 #define FICA_FASTICA_H
 
 #include "contrast.h"
+#include "whitening.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     typedef struct {
-        const Eigen::MatrixXd& matrix;
-        const Eigen::MatrixXd& ini_weights;
         unsigned int n_components;
         double conv_threshold;
         double alpha;
+        WhiteningTypeId white_type_id;
         ContrastFunctionId cont_func_id;
         bool verbose;
     } ICA_Params;
