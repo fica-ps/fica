@@ -1,4 +1,4 @@
-#include "../include/capi.h"
+#include "../headers/capi.h"
 #include <Eigen/Dense>
 #include <iostream>
 

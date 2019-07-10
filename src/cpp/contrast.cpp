@@ -1,4 +1,4 @@
-#include "../include/contrast.h"
+#include "../headers/contrast.h"
 #include <Eigen/Dense>
 
 namespace contrast {

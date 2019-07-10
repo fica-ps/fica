@@ -1,4 +1,4 @@
-#include "../include/fastica.h"
+#include "../headers/fastica.h"
 #include <iostream>
 
 using namespace Eigen;
