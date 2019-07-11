@@ -1,7 +1,3 @@
-cd ../eigen-eigen-323c052e1731/
-md build   
-cd build      
-cmake ..
-cd ../../
-cmake .
-
+cd ../
+g++ -shared -O3 -o out/fica.dll src/capi.cpp src/fastica.cpp src/whitening.cpp src/contrast.cpp -I include -I eigen   
+cd ./scripts

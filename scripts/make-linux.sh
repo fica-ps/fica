@@ -1,8 +1,3 @@
-cd ../eigen-eigen-323c052e1731/
-mkdir build   
-cd build      
-cmake ..
-cd ../../
-cmake .
-make
-
+cd ../
+g++ -shared -O3 -o out/fica.so src/capi.cpp src/fastica.cpp src/whitening.cpp src/contrast.cpp -I include -I eigen   
+cd ./scripts
