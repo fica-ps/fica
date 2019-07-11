@@ -16,6 +16,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
-add_library(fica SHARED include/fica.h src/cpp/fastica.cpp src/headers/fastica.h src/cpp/contrast.cpp src/headers/contrast.h src/cpp/capi.cpp src/headers/capi.h src/cpp/whitening.cpp src/headers/whitening.h)
+add_library(fica SHARED include/fica.h src/cpp/fastica.cpp include/fastica.h src/cpp/contrast.cpp include/contrast.h src/cpp/capi.cpp include/capi.h src/cpp/whitening.cpp include/whitening.h)
 
 target_link_libraries (fica Eigen3::Eigen)
