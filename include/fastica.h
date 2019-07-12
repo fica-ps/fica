@@ -19,6 +19,7 @@ extern "C" {
         WhiteningTypeId white_type_id;
         ContrastFunctionId cont_func_id;
         bool verbose;
+        unsigned int *seed;
     } ICA_Params;
 
 #ifdef __cplusplus
@@ -28,8 +29,8 @@ namespace fastica {
 
     Eigen::MatrixXd *fast_ica(
             const Eigen::MatrixXd& dataset,
-            const Eigen::MatrixXd& white_matrix,
-            const Eigen::MatrixXd& weights,
+            const Eigen::MatrixXd *white_matrix,
+            const Eigen::MatrixXd *weights,
             ICA_Params parameters
     );
 

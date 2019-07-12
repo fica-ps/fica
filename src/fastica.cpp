@@ -1,5 +1,6 @@
 #include "../include/fastica.h"
 #include <iostream>
+#include <time.h>
 
 using namespace Eigen;
 using namespace contrast;
@@ -101,8 +102,8 @@ MatrixXd *fast_ica_impl(
 // TODO implement
 MatrixXd *fastica::fast_ica(
     const Eigen::MatrixXd &dataset,
-    const Eigen::MatrixXd &white_matrix,
-    const Eigen::MatrixXd &weights,
+    const Eigen::MatrixXd *white_matrix,
+    const Eigen::MatrixXd *weights,
     ICA_Params parameters)
 {
 
@@ -111,9 +112,19 @@ MatrixXd *fastica::fast_ica(
         return nullptr;
     }
 
+    MatrixXd ws;
+    if(weights == nullptr) {
+        srand(parameters.seed != nullptr ? *parameters.seed : ((unsigned int)time(nullptr)));
+        ws = MatrixXd::Random(parameters.n_components, parameters.n_components);
+    } else {
+        ws = *weights;
+    }
+
+    MatrixXd dt = white_matrix == nullptr ? dataset * white_matrix->transpose() : dataset; // TODO whitening
+
     return fast_ica_impl(
-        dataset,
-        weights,
+        dt.transpose(),
+        ws,
         parameters.n_components,
         parameters.conv_threshold,
         parameters.alpha,
