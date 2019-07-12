@@ -66,9 +66,9 @@ extern "C"
     Matrix fast_ica(Matrix dataset, Matrix ini_weights, Matrix white_mat, ICA_Params parameters)
     {
 
-        Eigen::MatrixXd mat = *eigmat(dataset);
-        Eigen::MatrixXd iw  = *eigmat(ini_weights);
-        Eigen::MatrixXd wm  = *eigmat(white_mat);
+        Eigen::MatrixXd mat  = *eigmat(dataset);
+        Eigen::MatrixXd *iw  = eigmat(ini_weights);
+        Eigen::MatrixXd *wm  = eigmat(white_mat);
 
         Eigen::MatrixXd *m = fastica::fast_ica(mat, iw, wm, parameters);
 
