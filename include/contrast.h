@@ -13,7 +13,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 
-
 namespace contrast {
 
     typedef std::tuple<Eigen::MatrixXd,Eigen::MatrixXd> MatPair;
