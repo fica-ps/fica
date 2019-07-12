@@ -9,21 +9,27 @@
 #include <stdlib.h>
 #endif
 
+#ifdef COMPILING_DLL
+#define FICA_EXPORT __declspec(dllexport)
+#else
+#define FICA_EXPORT __declspec(dllimport)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     typedef void* Matrix;
 
-    __declspec(dllexport) Matrix new_Matrix_c(const double* values, size_t rows, size_t cols);
+    FICA_EXPORT Matrix new_Matrix_c(const double* values, size_t rows, size_t cols);
 
-    __declspec(dllexport) Matrix new_Matrix_r(const double *values, size_t rows, size_t cols);
+    FICA_EXPORT Matrix new_Matrix_r(const double *values, size_t rows, size_t cols);
 
-    __declspec(dllexport) void free_Matrix(Matrix m);
+    FICA_EXPORT void free_Matrix(Matrix m);
 
-    __declspec(dllexport) void print_Matrix(Matrix matrix, const char *message);
+    FICA_EXPORT void print_Matrix(Matrix matrix, const char *message);
 
-    __declspec(dllexport) Matrix fast_ica(Matrix dataset, Matrix ini_weights, Matrix white_mat, ICA_Params parameters);
+    FICA_EXPORT Matrix fast_ica(Matrix dataset, Matrix ini_weights, Matrix white_mat, ICA_Params parameters);
 
 #ifdef __cplusplus
 }
