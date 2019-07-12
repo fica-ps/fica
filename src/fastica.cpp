@@ -106,8 +106,10 @@ MatrixXd *fastica::fast_ica(
     ICA_Params parameters)
 {
 
-    if (parameters.alpha < 1.0 && parameters.alpha > 2.0)
+    if (parameters.alpha < 1.0 && parameters.alpha > 2.0) {
         cerr << "alpha must be between 1.0 and 2.0" << endl;
+        return nullptr;
+    }
 
     return fast_ica_impl(
         dataset,
