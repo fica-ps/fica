@@ -120,7 +120,7 @@ MatrixXd *fastica::fast_ica(
         ws = *weights;
     }
 
-    MatrixXd dt = white_matrix == nullptr ? dataset * white_matrix->transpose() : dataset; // TODO whitening
+    MatrixXd dt = white_matrix != nullptr ? dataset * white_matrix->transpose() : dataset; // TODO whitening
 
     return fast_ica_impl(
         dt.transpose(),
