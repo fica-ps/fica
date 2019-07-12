@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #endif
 
-#ifdef COMPILING_DLL
+#ifdef COMPILING_SHARED_LIB
 #define FICA_EXPORT __declspec(dllexport)
 #else
 #define FICA_EXPORT __declspec(dllimport)
@@ -30,6 +30,8 @@ extern "C" {
     FICA_EXPORT void print_Matrix(Matrix matrix, const char *message);
 
     FICA_EXPORT Matrix fast_ica(Matrix dataset, Matrix ini_weights, Matrix white_mat, ICA_Params parameters);
+
+    FICA_EXPORT double *copy_Matrix(Matrix matrix, double* buffer, bool dealloc);
 
 #ifdef __cplusplus
 }

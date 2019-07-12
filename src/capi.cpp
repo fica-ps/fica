@@ -42,6 +42,27 @@ extern "C"
              << std::endl;
     }
 
+    double *copy_Matrix(Matrix matrix, double* buffer, bool dealloc) {
+        auto m = eigmat(matrix);
+
+        auto msize = m->size();
+
+        double *to = buffer;
+
+        if(to == nullptr)
+            to = (double*)malloc(sizeof(double) * msize);
+
+        for(size_t i = 0; i < m->size(); ++i)
+            to[i] = m->data()[i];
+
+        if(dealloc)
+            delete m;
+
+        return to;
+    }
+
+
+
     Matrix fast_ica(Matrix dataset, Matrix ini_weights, Matrix white_mat, ICA_Params parameters)
     {
 

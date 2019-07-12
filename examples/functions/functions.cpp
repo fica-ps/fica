@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <fica.h>
+#include <iostream>
 
 int main() {
 
@@ -21,6 +22,14 @@ int main() {
 
     print_Matrix(matrix_fs, "\ncol-1: f1  col-2: f2 ");
 
-    free_Matrix(matrix_fs);
+    double *x = copy_Matrix(matrix_fs, nullptr, true);
+
+    for (size_t row = 0; row < 1000; row++){
+        for (size_t col = 0; col < 2; col += 2) {
+            std::cout << "(" << x[col * 1000 + row] << ", " <<  x[(col + 1) * 1000 + row] << ")" << std::endl;
+        }
+    }
+
+    free(x);
 
 }

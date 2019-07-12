@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(fica)
 
-add_compile_definitions(COMPILING_DLL=1)
+add_compile_definitions(COMPILING_SHARED_LIB=1)
 
 add_subdirectory(examples/functions)
 
