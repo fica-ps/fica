@@ -6,7 +6,7 @@ using namespace Eigen;
 using namespace contrast;
 using namespace std;
 
-double distance(const RowVectorXd &w, const RowVectorXd &nw)
+double conv_distance(const RowVectorXd& w, const RowVectorXd& nw)
 {
     return abs(abs(w.cwiseProduct(nw).sum()) - 1.0);
 }
@@ -14,14 +14,14 @@ double distance(const RowVectorXd &w, const RowVectorXd &nw)
 VectorXd decorrelate(const VectorXd &row_mat, const MatrixXd &ret_w, size_t n_comps)
 {
 
-    VectorXd t(n_comps);
+    VectorXd t = VectorXd::Constant(ret_w.cols(), 0.0);
 
     for (size_t i = 0; i < n_comps - 1; ++i)
     {
 
         VectorXd rw_row_i = ret_w.row(i).transpose();
 
-        auto k = row_mat.cwiseProduct(rw_row_i).sum();
+        double k = row_mat.cwiseProduct(rw_row_i).sum();
 
         t += k * rw_row_i;
     }
@@ -40,6 +40,7 @@ MatrixXd *fast_ica_impl(
 {
 
     auto ret_weights = new MatrixXd(n_components, n_components);
+    *ret_weights = MatrixXd::Zero(n_components, n_components);
 
     for (size_t comp_i = 0; comp_i < n_components; ++comp_i)
     {
@@ -60,10 +61,10 @@ MatrixXd *fast_ica_impl(
             if (verbose)
                 cout << "Begin iteration " << iter_i << endl;
 
-            auto wx = wp.transpose() * matrix;
+            MatrixXd wx = wp.transpose() * matrix;
 
             MatPair dxg_pair = contrast_function(wx, alpha);
-            MatrixXd dg = get<0>(dxg_pair);
+            MatrixXd dg  = get<0>(dxg_pair).array().colwise().replicate(2);
             MatrixXd d2g = get<1>(dxg_pair);
 
             MatrixXd xdg = matrix.cwiseProduct(dg);
@@ -79,12 +80,12 @@ MatrixXd *fast_ica_impl(
 
             nw = nw.normalized();
 
-            double dist = distance(&wp, &nw);
+            double dist = conv_distance(wp, nw);
 
             if (verbose)
                 cout << "distance: " << dist << endl;
 
-            wp.noalias() = nw;
+            wp = nw;
 
             if (dist < conv_threshold)
             {

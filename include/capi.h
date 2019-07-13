@@ -33,6 +33,12 @@ extern "C" {
 
     FICA_EXPORT double *copy_Matrix(Matrix matrix, double* buffer, bool dealloc);
 
+    //FICA_EXPORT Matrix mul(Matrix m1, Matrix m2, bool in_place);
+
+    //FICA_EXPORT Matrix add(Matrix m1, Matrix m2, bool in_place);
+
+
+
 #ifdef __cplusplus
 }
 #endif
