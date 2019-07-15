@@ -10,6 +10,27 @@
 
 using namespace std;
 
+Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix) {
+    if(matrix.rows() == 1) {
+        std::cerr << "Matrix must have more than 1 column";
+        exit(-1);
+    }
+
+    Eigen::MatrixXd centered = matrix.rowwise() - matrix.colwise().mean();
+    Eigen::MatrixXd cov = (centered.adjoint() * centered) / double(matrix.rows() - 1);
+    //Eigen::EigenSolver<Eigen::MatrixXd> eig(cov, true);
+
+
+    //Eigen::MatrixXd eigvals = eig.eigenvalues();
+    //Eigen::MatrixXd eigvecs = eig.eigenvectors();
+
+    //cout << eigvals;
+
+    //cout << eigvecs;
+
+    return matrix;
+}
+
 int main() {
 
 
