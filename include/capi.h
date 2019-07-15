@@ -2,6 +2,7 @@
 #define FICA_CAPI_H
 
 #include "fastica.h"
+#include "winexport.h"
 
 #ifdef __cplusplus
 #include <cstdio>
@@ -9,18 +10,12 @@
 #include <stdlib.h>
 #endif
 
-#ifdef COMPILING_SHARED_LIB
-#define FICA_EXPORT __declspec(dllexport)
-#else
-#define FICA_EXPORT __declspec(dllimport)
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     typedef void* Matrix;
-
+    
     FICA_EXPORT Matrix new_Matrix_c(const double* values, size_t rows, size_t cols);
 
     FICA_EXPORT Matrix new_Matrix_r(const double *values, size_t rows, size_t cols);
@@ -36,7 +31,6 @@ extern "C" {
     //FICA_EXPORT Matrix mul(Matrix m1, Matrix m2, bool in_place);
 
     //FICA_EXPORT Matrix add(Matrix m1, Matrix m2, bool in_place);
-
 
 
 #ifdef __cplusplus

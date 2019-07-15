@@ -7,6 +7,7 @@
 
 #include "contrast.h"
 #include "whitening.h"
+#include "winexport.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,7 +28,7 @@ extern "C" {
 
 namespace fastica {
 
-    Eigen::MatrixXd *fast_ica(
+    FICA_EXPORT Eigen::MatrixXd *fast_ica(
             const Eigen::MatrixXd& dataset,
             const Eigen::MatrixXd *white_matrix,
             const Eigen::MatrixXd *weights,
