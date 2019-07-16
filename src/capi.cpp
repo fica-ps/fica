@@ -61,7 +61,17 @@ extern "C"
         return to;
     }
 
+    unsigned int rows(Matrix matrix) {
+        return eigmat(matrix)->rows();
+    }
 
+    unsigned int cols(Matrix matrix) {
+        return eigmat(matrix)->cols();
+    }
+
+    unsigned int size(Matrix matrix) {
+        return eigmat(matrix)->size();
+    }
 
     Matrix fast_ica(Matrix dataset, Matrix ini_weights, Matrix white_mat, ICA_Params parameters)
     {

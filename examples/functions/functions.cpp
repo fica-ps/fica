@@ -48,13 +48,11 @@ int main() {
     mat << 0.291, -0.5439 , 0.6557, 0.5572;
     *matrix_fs *= mat;
 
-    cout << whitening::pca(matrix_fs->eval(), PCA);
-    return 0;
     print_Matrix(matrix_fs,"matrix fs");
 
-    //Matrix retW = fast_ica(matrix_fs, white_mat ,ini_w, params);
-    //print_Matrix(retW,"retW");
-    //free_Matrix(retW);
+    Matrix retW = fast_ica(matrix_fs, white_mat ,ini_w, params);
+    print_Matrix(retW,"retW");
+    free_Matrix(retW);
 
     free_Matrix(matrix_fs);
 
