@@ -80,7 +80,6 @@ MatrixXd *fast_ica_impl(
 
             if (comp_i > 0) {
                 nw = decorrelate(nw, *ret_weights, comp_i);
-                cout << "nw decorrelated" << endl << nw << "\n\n" << endl;
             }
             nw = nw.normalized();
 
@@ -97,7 +96,6 @@ MatrixXd *fast_ica_impl(
                 cout << "converged in iteration: " << iter_i << endl;
 
                 ret_weights->row(comp_i) = wp;
-                cout << "ret_weights" << endl << *ret_weights << "\n\n" << endl;
                 break;
             }
         }
