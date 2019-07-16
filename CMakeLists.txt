@@ -8,8 +8,6 @@ endif()
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     add_definitions("-O3 -msse2")
     
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_definitions("O2")
 endif()
 
 
