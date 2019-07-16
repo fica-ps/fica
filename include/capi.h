@@ -34,6 +34,8 @@ extern "C" {
 
     FICA_EXPORT unsigned int size(Matrix matrix);
 
+    FICA_EXPORT ICA_Params default_ica_params(Matrix m);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,4 +1,6 @@
 #include "../include/capi.h"
+#include "../include/whitening.h"
+#include "../include/contrast.h"
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -83,5 +85,17 @@ extern "C"
         Eigen::MatrixXd *m = fastica::fast_ica(mat, iw, wm, parameters);
 
         return ficamat(m);
+    }
+
+    FICA_EXPORT ICA_Params default_ica_params(Matrix m) {
+        return ICA_Params {
+            cols(m),
+            0.0001,
+            1.0,
+            PCA,
+            LOGCOSH,
+            false,
+            nullptr
+        };
     }
 }
