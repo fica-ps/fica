@@ -6,7 +6,7 @@ namespace whitening {
 
     using namespace Eigen;
 
-    Eigen::MatrixXd  get_white_matrix(Eigen::MatrixXd matrix, WhiteningTypeId wtid)
+    Eigen::MatrixXd get_white_matrix(Eigen::MatrixXd matrix, WhiteningTypeId wtid)
     {
         return pca(matrix, wtid);
     }

@@ -12,13 +12,14 @@ extern "C" {
         ZCA   = true
     } WhiteningTypeId;
 
+#ifdef __cplusplus
+}
+
+namespace whitening {
+
     typedef Eigen::MatrixXd (*WhiteningMatrixGen)(const Eigen::MatrixXd&);
 
-    namespace whitening {
-        Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix, bool zca);
-    }
-
-#ifdef __cplusplus
+    Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix, bool zca);
 }
 #endif
 
