@@ -38,6 +38,7 @@ MatrixXd *fast_ica_impl(
     ContrastFunction contrast_function,
     bool verbose)
 {
+    cout << "dataset" << endl << matrix << "\n\n" << endl;
 
     auto ret_weights = new MatrixXd(n_components, n_components);
     *ret_weights = MatrixXd::Zero(n_components, n_components);
@@ -50,35 +51,56 @@ MatrixXd *fast_ica_impl(
         if (verbose)
             cout << "Begin search for component " << comp_i << endl;
 
-        if (comp_i > 0)
+        if (comp_i > 0) {
             wp = decorrelate(wp, *ret_weights, comp_i);
-
+            cout << "wp decorrelated" << endl << wp << "\n\n" << endl;
+        }
         wp = wp.normalized();
 
-        for (size_t iter_i = 0;; ++iter_i)
-        {
+        cout << "wp normalized" << endl << wp << "\n\n" << endl;
+
+        for (size_t iter_i = 0;; ++iter_i) {
 
             if (verbose)
                 cout << "Begin iteration " << iter_i << endl;
 
             MatrixXd wx = wp.transpose() * matrix;
+            wx.eval();
+            cout << "wx" << endl << wx << "\n\n" << endl;
 
             MatPair dxg_pair = contrast_function(wx, alpha);
-            MatrixXd dg  = get<0>(dxg_pair).array().colwise().replicate(2);
+            MatrixXd dg = get<0>(dxg_pair).array().colwise().replicate(2);
             MatrixXd d2g = get<1>(dxg_pair);
+
+            cout << "dg" << endl << dg << "\n\n" << endl;
+
+            cout << "d2g" << endl << d2g << "\n\n" << endl;
 
             MatrixXd xdg = matrix.cwiseProduct(dg);
 
+            cout << "xdg" << endl << xdg << "\n\n" << endl;
+
             MatrixXd v1 = xdg.rowwise().mean();
+
+            cout << "v1\n\n\n" << endl << v1 << "\n\n" << endl;
+
+            cout << "d2g mean" << d2g.mean();
 
             VectorXd v2 = d2g.mean() * wp;
 
+            cout << "v2" << endl << v2 << "\n\n" << endl;
+
             VectorXd nw = v1 - v2;
 
-            if (comp_i > 0)
-                nw = decorrelate(nw, *ret_weights, comp_i);
+            cout << "nw" << endl << nw << "\n\n" << endl;
 
+            if (comp_i > 0) {
+                nw = decorrelate(nw, *ret_weights, comp_i);
+                cout << "nw decorrelated" << endl << nw << "\n\n" << endl;
+            }
             nw = nw.normalized();
+
+            cout << "nw normalized" << endl << nw << "\n\n" << endl;
 
             double dist = conv_distance(wp, nw);
 
@@ -92,6 +114,7 @@ MatrixXd *fast_ica_impl(
                 cout << "converged in iteration: " << iter_i << endl;
 
                 ret_weights->row(comp_i) = wp;
+                cout << "ret_weights" << endl << *ret_weights << "\n\n" << endl;
                 break;
             }
         }
@@ -121,8 +144,10 @@ MatrixXd *fastica::fast_ica(
         ws = *weights;
     }
 
-    MatrixXd dt = white_matrix != nullptr ? dataset * white_matrix->transpose() : dataset; // TODO whitening
-
+    MatrixXd wt = white_matrix != nullptr ? white_matrix->transpose() : dataset;
+    cout <<"wt\n\n" << wt << endl;
+    MatrixXd dt = dataset * wt; // TODO whitening
+    cout <<"dt\n\n" << dt << endl;
     return fast_ica_impl(
         dt.transpose(),
         ws,

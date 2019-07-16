@@ -6,35 +6,29 @@ namespace whitening {
 
     using namespace Eigen;
 
-    static WhiteningMatrixGen WHITE_MAT_GEN[2] = {
-            &whitening::pca,
-            &whitening::zca
-    };
-
     Eigen::MatrixXd  get_white_matrix(Eigen::MatrixXd matrix, WhiteningTypeId wtid)
     {
-        return WHITE_MAT_GEN[wtid](matrix);
+        return pca(matrix, wtid);
     }
 
-    Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix) {
+    Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix, bool zca) {
         if(matrix.rows() == 1) {
             std::cerr << "Matrix must have more than 1 column";
             exit(-1);
         }
-        /*
-        MatrixXd centered = matrix.rowwise() - matrix.colwise().mean();
-        MatrixXd cov = (centered.adjoint() * centered) / double(matrix.rows() - 1);
-        EigenSolver<MatrixXd> eig(cov, true);
 
+        Eigen::MatrixXd centered = matrix.rowwise() - matrix.colwise().mean();
+        Eigen::MatrixXd cov = (centered.transpose() * centered) / double( matrix.rows() - 1 );
 
-        MatrixXd eigvals = eig.eigenvalues();
-        MatrixXd eigvecs = eig.eigenvectors();
-        */
-        return matrix;
-    }
+        Eigen::EigenSolver<Eigen::MatrixXd> es(cov);
 
-    Eigen::MatrixXd zca(const Eigen::MatrixXd& matrix) {
-        return matrix;
+        Eigen::VectorXd vals = es.eigenvalues().real().reverse();
+        Eigen::MatrixXd vecs = es.eigenvectors().real().rowwise().reverse();
+        Eigen::MatrixXd ret = (1.0 / vals.array().sqrt()).matrix().asDiagonal() * vecs.transpose();
+
+        if(zca)
+            return vecs * ret;
+        return ret;
     }
 
 }

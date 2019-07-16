@@ -8,16 +8,14 @@ extern "C" {
 #endif
 
     typedef enum {
-        EIGEN = 0,
-        PCA   = 1,
-        ZCA   = 2
+        PCA   = false,
+        ZCA   = true
     } WhiteningTypeId;
 
     typedef Eigen::MatrixXd (*WhiteningMatrixGen)(const Eigen::MatrixXd&);
 
     namespace whitening {
-        Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix);
-        Eigen::MatrixXd zca(const Eigen::MatrixXd& matrix);
+        Eigen::MatrixXd pca(const Eigen::MatrixXd& matrix, bool zca);
     }
 
 #ifdef __cplusplus
