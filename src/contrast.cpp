@@ -18,7 +18,6 @@ namespace contrast
 
     MatPair logcosh(const Eigen::MatrixXd &mat, double alpha)
     {
-        // todo
         MatrixXd factored_mat = alpha * mat;
 
         MatrixXd dg  = factored_mat.array().tanh();
