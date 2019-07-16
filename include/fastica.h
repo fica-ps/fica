@@ -17,6 +17,7 @@ extern "C" {
         unsigned int n_components;
         double conv_threshold;
         double alpha;
+        unsigned int max_iter;
         WhiteningTypeId white_type_id;
         ContrastFunctionId cont_func_id;
         bool verbose;

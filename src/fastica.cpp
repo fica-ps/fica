@@ -36,9 +36,9 @@ MatrixXd *fast_ica_impl(
     double conv_threshold,
     double alpha,
     ContrastFunction contrast_function,
-    bool verbose)
+    bool verbose,
+    unsigned int max_iter)
 {
-    cout << "dataset" << endl << matrix << "\n\n" << endl;
 
     auto ret_weights = new MatrixXd(n_components, n_components);
     *ret_weights = MatrixXd::Zero(n_components, n_components);
@@ -53,11 +53,9 @@ MatrixXd *fast_ica_impl(
 
         if (comp_i > 0) {
             wp = decorrelate(wp, *ret_weights, comp_i);
-            cout << "wp decorrelated" << endl << wp << "\n\n" << endl;
         }
         wp = wp.normalized();
 
-        cout << "wp normalized" << endl << wp << "\n\n" << endl;
 
         for (size_t iter_i = 0;; ++iter_i) {
 
@@ -66,33 +64,19 @@ MatrixXd *fast_ica_impl(
 
             MatrixXd wx = wp.transpose() * matrix;
             wx.eval();
-            cout << "wx" << endl << wx << "\n\n" << endl;
 
             MatPair dxg_pair = contrast_function(wx, alpha);
             MatrixXd dg = get<0>(dxg_pair).array().colwise().replicate(2);
             MatrixXd d2g = get<1>(dxg_pair);
 
-            cout << "dg" << endl << dg << "\n\n" << endl;
-
-            cout << "d2g" << endl << d2g << "\n\n" << endl;
-
             MatrixXd xdg = matrix.cwiseProduct(dg);
-
-            cout << "xdg" << endl << xdg << "\n\n" << endl;
 
             MatrixXd v1 = xdg.rowwise().mean();
 
-            cout << "v1\n\n\n" << endl << v1 << "\n\n" << endl;
-
-            cout << "d2g mean" << d2g.mean();
-
             VectorXd v2 = d2g.mean() * wp;
-
-            cout << "v2" << endl << v2 << "\n\n" << endl;
 
             VectorXd nw = v1 - v2;
 
-            cout << "nw" << endl << nw << "\n\n" << endl;
 
             if (comp_i > 0) {
                 nw = decorrelate(nw, *ret_weights, comp_i);
@@ -100,7 +84,6 @@ MatrixXd *fast_ica_impl(
             }
             nw = nw.normalized();
 
-            cout << "nw normalized" << endl << nw << "\n\n" << endl;
 
             double dist = conv_distance(wp, nw);
 
@@ -109,7 +92,7 @@ MatrixXd *fast_ica_impl(
 
             wp = nw;
 
-            if (dist < conv_threshold)
+            if (dist < conv_threshold || iter_i >= max_iter)
             {
                 cout << "converged in iteration: " << iter_i << endl;
 
@@ -155,5 +138,6 @@ MatrixXd *fastica::fast_ica(
         parameters.conv_threshold,
         parameters.alpha,
         get_contrast_function(parameters.cont_func_id),
-        parameters.verbose);
+        parameters.verbose,
+        parameters.max_iter);
 }

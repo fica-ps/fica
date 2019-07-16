@@ -92,6 +92,7 @@ extern "C"
             cols(m),
             0.0001,
             1.0,
+            100,
             PCA,
             LOGCOSH,
             false,

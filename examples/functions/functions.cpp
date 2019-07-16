@@ -35,10 +35,12 @@ int main() {
         2,
         0.0001,
         1.0,
+        100,
         PCA,
         LOGCOSH,
         true,
         nullptr,
+
     };
 
     double white_vals[4] = { -1.0376, 1.99405, -18.3002, -9.5225 };
