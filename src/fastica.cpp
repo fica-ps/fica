@@ -30,14 +30,14 @@ VectorXd decorrelate(const VectorXd &row_mat, const MatrixXd &ret_w, size_t n_co
 }
 
 MatrixXd *fast_ica_impl(
-    const MatrixXd &matrix,
-    const MatrixXd &ini_weights,
-    unsigned int n_components,
-    double conv_threshold,
-    double alpha,
-    ContrastFunction contrast_function,
-    bool verbose,
-    unsigned int max_iter)
+        const MatrixXd &matrix,
+        const MatrixXd &ini_weights,
+        unsigned int n_components,
+        double conv_threshold,
+        double alpha,
+        ContrastFunction contrast_function,
+        bool verbose,
+        unsigned int max_iter)
 {
 
     auto ret_weights = new MatrixXd(n_components, n_components);
@@ -93,7 +93,8 @@ MatrixXd *fast_ica_impl(
 
             if (dist < conv_threshold || iter_i >= max_iter)
             {
-                cout << "converged in iteration: " << iter_i << endl;
+                if(verbose)
+                    cout << "converged in iteration: " << iter_i << endl;
 
                 ret_weights->row(comp_i) = wp;
                 break;
@@ -106,10 +107,10 @@ MatrixXd *fast_ica_impl(
 
 // TODO implement
 MatrixXd *fastica::fast_ica(
-    const Eigen::MatrixXd &dataset,
-    const Eigen::MatrixXd *white_matrix,
-    const Eigen::MatrixXd *weights,
-    ICA_Params parameters)
+        const Eigen::MatrixXd &dataset,
+        const Eigen::MatrixXd *white_matrix,
+        const Eigen::MatrixXd *weights,
+        ICA_Params parameters)
 {
 
     if (parameters.alpha < 1.0 && parameters.alpha > 2.0) {
@@ -126,16 +127,14 @@ MatrixXd *fastica::fast_ica(
     }
 
     MatrixXd wt = white_matrix != nullptr ? white_matrix->transpose() : dataset;
-    cout <<"wt\n\n" << wt << endl;
-    MatrixXd dt = dataset * wt; // TODO whitening
-    cout <<"dt\n\n" << dt << endl;
+    MatrixXd dt = dataset * wt;
     return fast_ica_impl(
-        dt.transpose(),
-        ws,
-        parameters.n_components,
-        parameters.conv_threshold,
-        parameters.alpha,
-        get_contrast_function(parameters.cont_func_id),
-        parameters.verbose,
-        parameters.max_iter);
+            dt.transpose(),
+            ws,
+            parameters.n_components,
+            parameters.conv_threshold,
+            parameters.alpha,
+            get_contrast_function(parameters.cont_func_id),
+            parameters.verbose,
+            parameters.max_iter);
 }

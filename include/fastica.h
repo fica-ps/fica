@@ -1,7 +1,3 @@
-//
-// Created by adriano on 7/2/19.
-//
-
 #ifndef FICA_FASTICA_H
 #define FICA_FASTICA_H
 

@@ -1,7 +1,3 @@
-//
-// Created by Adriano on 12/07/2019.
-//
-
 #include <cmath>
 #include <fica.h>
 #include <iostream>

@@ -3,7 +3,16 @@ project(fica)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_compile_definitions(COMPILING_DLL=1)
-endif()    
+endif()
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_compile_options("-msse2")
+    add_compile_options("-O3 ")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    add_compile_options("O2")
+endif()
+
+
 
 add_subdirectory(examples/functions)
 
