@@ -6,10 +6,10 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    add_compile_options("-msse2")
-    add_compile_options("-O3 ")
+    add_definitions("-O3 -msse2")
+    
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_compile_options("O2")
+    add_definitions("O2")
 endif()
 
 
