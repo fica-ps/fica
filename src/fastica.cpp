@@ -1,6 +1,6 @@
 #include "../include/fastica.h"
 #include <iostream>
-#include <time.h>
+#include <ctime>
 
 using namespace Eigen;
 using namespace contrast;
@@ -9,6 +9,20 @@ using namespace std;
 double conv_distance(const RowVectorXd& w, const RowVectorXd& nw)
 {
     return abs(abs(w.cwiseProduct(nw).sum()) - 1.0);
+}
+
+Eigen::VectorXd normalize(const Eigen::VectorXd& v) {
+    // normalize vector
+    double norm = v.norm();
+    double beforeMax = 1.0 / (DBL_MAX - DBL_EPSILON);
+
+    if(norm >= beforeMax)
+        return v * (1.0 / norm);
+
+    double scale = DBL_EPSILON / beforeMax;
+    Eigen::VectorXd v_scaled = v * scale;
+
+    return v_scaled * (1.0 / (norm * scale));
 }
 
 VectorXd decorrelate(const VectorXd &row_mat, const MatrixXd &ret_w, size_t n_comps)
@@ -54,7 +68,7 @@ MatrixXd *fast_ica_impl(
         if (comp_i > 0) {
             wp = decorrelate(wp, *ret_weights, comp_i);
         }
-        wp = wp.normalized();
+        wp = normalize(wp);
 
 
         for (size_t iter_i = 0;; ++iter_i) {
@@ -81,8 +95,7 @@ MatrixXd *fast_ica_impl(
             if (comp_i > 0) {
                 nw = decorrelate(nw, *ret_weights, comp_i);
             }
-            nw = nw.normalized();
-
+            nw = normalize(nw);
 
             double dist = conv_distance(wp, nw);
 
@@ -105,7 +118,6 @@ MatrixXd *fast_ica_impl(
     return ret_weights;
 }
 
-// TODO implement
 MatrixXd *fastica::fast_ica(
         const Eigen::MatrixXd &dataset,
         const Eigen::MatrixXd *white_matrix,
